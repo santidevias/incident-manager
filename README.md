@@ -1,59 +1,71 @@
-# ProjectAngular
+# Aplicación para Gestión de Incidentes
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.8.
+> Aplicación web desarrollada en Angular para el registro, seguimiento y administración eficiente de incidentes.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🛠️ Stack Tecnológico Planificado
 
-```bash
-ng serve
-```
+- **Framework & Core:** Angular 20, TypeScript (Strict Mode)
+- **Arquitectura & Estado:** Componentes Standalone, Angular Signals, RxJS
+- **Navegación & Seguridad:** Angular Router, Guards funcionales
+- **Comunicación HTTP:** HttpClient, Interceptores funcionales
+- **Formularios:** Reactive Forms
+- **Estilos & Maquetación:** HTML semántico, CSS y SCSS
+- **Pruebas & Calidad:** Pruebas unitarias, ESLint
+- **Control de Versiones:** Git
+- **API Mock / Backend:** Mockoon
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## 🚀 Requisitos Previos
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Asegúrate de contar con las siguientes herramientas instaladas localmente antes de ejecutar el proyecto:
 
-```bash
-ng generate component component-name
-```
+- [Node.js](https://nodejs.org/) (Versión recomendada según compatibilidad de Angular 20+)
+- [npm](https://www.npmjs.com/)
+- [Angular CLI](https://angular.dev/tools/cli) (Versión 20 o superior)
+- [Mockoon](https://mockoon.com/) (Para la simulación de servicios REST)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## ⚙️ Instalación y Configuración
 
-## Building
+Sigue estos pasos para clonar e inicializar el entorno de desarrollo:
 
-To build the project run:
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/santidevias/incident-manager
+   cd incident-manager
+   ```
 
-```bash
-ng build
-```
+2. **Asegurar rama de trabajo**
+   ```bash
+   git checkout master
+   ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+3. **Instalar dependencias**
+   ```bash
+   npm install
+   ```
 
-## Running unit tests
+4. **Ejecutar el servidor de desarrollo**
+   ```bash
+   ng serve
+   ```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+5. **Asegurar rama de trabajo**
+   ```bash
+   git checkout master
 
-```bash
-ng test
-```
+## 🧪 Ejecución de Pruebas Unitarias
 
-## Running end-to-end tests
+Para ejecutar el conjunto de pruebas unitarias de la aplicación:
 
-For end-to-end (e2e) testing, run:
+   ```bash
+   ng test
+  ```
 
-```bash
-ng e2e
-```
+## ✒️ Autor
+- Santiago Castrillón Sánchez
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

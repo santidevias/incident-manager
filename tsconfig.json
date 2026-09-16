@@ -3,19 +3,28 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "core": ["./dist/core"]
+    },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
+    "module": "preserve",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "ES2022",
-    "module": "preserve"
+    "target": "ES2022"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
+    "strictTemplates": true,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true
   },
@@ -26,6 +35,12 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/core/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/core/tsconfig.spec.json"
     }
   ]
 }
