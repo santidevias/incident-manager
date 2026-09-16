@@ -1,0 +1,28 @@
+<h4>GESTOR DE EMPLEADOS</h4>
+<form #employeeForm="ngForm" (ngSubmit)="onSave()">
+  <label id="label_name" for="name">Nombre:</label><br />
+  <input id="name" name="name" [(ngModel)]="name" type="text" /><br />
+  <label id="label_email" for="email">Email:</label><br />
+  <input id="email" [(ngModel)]="email" name="email" type="email" /><br />
+  <label id="label_position" for="position">Cargo:</label><br />
+  <select id="position" name="position" [(ngModel)]="position">
+    <option value=""></option>
+    <option value="development">Desarrollador</option>
+    <option value="dising">Diseñador</option>
+    <option value="architect">Arquitecto</option></select
+  ><br />
+  <label id="label_salary" for="salary">Salario:</label><br />
+  <input id="salary" name="salary" type="number" [(ngModel)]="salary" /><br />
+  <label id="label_date_start" for="date_start">Fecha de ingreso:</label><br />
+  <input id="date_start" name="date_start" type="date" [(ngModel)]="date_start" /><br />
+  <label id="label_active" for="active">Activo:</label><br />
+  <input id="active" name="active" type="checkbox" [(ngModel)]="active" /><br />
+  <button type="submit">Guardar</button>
+</form>
+
+<p>Nombre: {{ name | uppercase }}</p>
+<p>Correo: {{ email }}</p>
+<p>Cargo: {{ position | position }}</p>
+<p>Salario: {{ salary | currency }}</p>
+<p>Fecha de ingreso: {{ date_start | date }}</p>
+<p>Activo: {{ active }}</p>
