@@ -1,0 +1,326 @@
+{
+  "uuid": "0d8fd770-0811-4976-a6ba-1dfd5076c5fa",
+  "lastMigration": 33,
+  "name": "Angular test",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "99a5f6a2-fc84-4b42-afb1-a101b1721386",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "",
+      "responses": [
+        {
+          "uuid": "c7940e9c-34fd-4fd7-ad43-b76025f4ccb3",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "dcd8d566-c402-4778-9f70-8c7e1e993516",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/v1/auth/login",
+      "responses": [
+        {
+          "uuid": "8ee0f8af-0941-4cf3-bd5c-313b721710f1",
+          "body": "{\n  \"token\": \"mock-jwt-token-admin-12345\",\n  \"user\": {\n    \"email\": \"admin@ias.com.co\",\n    \"name\": \"Santiago Administrador\",\n    \"role\": \"admin\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "email",
+              "value": "admin@ias.com.co",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "a79c3ac1-e86d-4005-b680-d194009fe456",
+          "body": "{\n  \"token\": \"mock-jwt-token-support-67890\",\n  \"user\": {\n    \"email\": \"soporte@ias.com.co\",\n    \"name\": \"Agente Soporte\",\n    \"role\": \"support\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "email",
+              "value": "soporte@ias.com.co",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "631297b1-0fb7-41bf-87fb-2fef64edb917",
+          "body": "{\n  \"token\": \"mock-jwt-token-requester-abcde\",\n  \"user\": {\n    \"email\": \"solicitante@ias.com.co\",\n    \"name\": \"Usuario Solicitante\",\n    \"role\": \"requester\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "email",
+              "value": "solicitante@ias.com.co",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "6b1788da-cd22-44c8-80e8-53b8ba08fd87",
+          "body": "{\n  \"message\": \"Credenciales no válidas\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "11bff881-d8f8-41e8-a2b5-d52b5b051255",
+      "type": "http",
+      "documentation": "Esta es una ruta de incidencias, aquí mostrará todas las incidencias",
+      "method": "get",
+      "endpoint": "api/v1/incidents",
+      "responses": [
+        {
+          "uuid": "f3e43ad9-d8a1-4eb5-ba0b-ec765b7f5c7d",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Incidencias recuperadas exitosamente\",\n  \"data\": [\n    {\n      \"id\": \"inc-001\",\n      \"title\": \"Fallo en servidor de base de datos principal\",\n      \"description\": \"El clúster primario de PostgreSQL está rechazando conexiones por límite de sockets.\",\n      \"category\": \"Infraestructura\",\n      \"priority\": \"CRITICAL\",\n      \"status\": \"OPEN\",\n      \"reportId\": \"usr-101\",\n      \"assignedAggentId\": \"agt-201\",\n      \"createdAt\": \"2026-09-10T08:30:00Z\",\n      \"updatedAt\": \"2026-09-10T08:30:00Z\"\n    },\n    {\n      \"id\": \"inc-002\",\n      \"title\": \"Error 500 al procesar pagos con tarjeta\",\n      \"description\": \"La pasarela de pagos retorna tiempo de espera agotado al confirmar la transacción.\",\n      \"category\": \"Pagos\",\n      \"priority\": \"HIGH\",\n      \"status\": \"IN_PROGRESS\",\n      \"reportId\": \"usr-102\",\n      \"assignedAggentId\": \"agt-202\",\n      \"createdAt\": \"2026-09-11T09:15:00Z\",\n      \"updatedAt\": \"2026-09-11T10:00:00Z\"\n    },\n    {\n      \"id\": \"inc-003\",\n      \"title\": \"Incapacidad para descargar facturas en PDF\",\n      \"description\": \"Los clientes reportan un botón deshabilitado en la sección de historial de compras.\",\n      \"category\": \"Facturación\",\n      \"priority\": \"MEDIUM\",\n      \"status\": \"OPEN\",\n      \"reportId\": \"usr-103\",\n      \"assignedAggentId\": \"agt-201\",\n      \"createdAt\": \"2026-09-12T11:45:00Z\",\n      \"updatedAt\": \"2026-09-12T11:45:00Z\"\n    },\n    {\n      \"id\": \"inc-004\",\n      \"title\": \"Error tipográfico en el menú de navegación\",\n      \"description\": \"El texto de la pestaña 'Contáctanos' dice 'Contátenos'.\",\n      \"category\": \"UI/UX\",\n      \"priority\": \"LOW\",\n      \"status\": \"CLOSED\",\n      \"reportId\": \"usr-104\",\n      \"assignedAggentId\": \"agt-203\",\n      \"createdAt\": \"2026-09-13T14:20:00Z\",\n      \"updatedAt\": \"2026-09-14T09:00:00Z\"\n    },\n    {\n      \"id\": \"inc-005\",\n      \"title\": \"Vulnerabilidad detectada en dependencia de npm\",\n      \"description\": \"Alerta de seguridad automatizada sobre paquete con riesgo de inyección de código.\",\n      \"category\": \"Seguridad\",\n      \"priority\": \"CRITICAL\",\n      \"status\": \"IN_PROGRESS\",\n      \"reportId\": \"usr-105\",\n      \"assignedAggentId\": \"agt-202\",\n      \"createdAt\": \"2026-09-13T16:00:00Z\",\n      \"updatedAt\": \"2026-09-14T08:15:00Z\"\n    },\n    {\n      \"id\": \"inc-006\",\n      \"title\": \"Lentitud extrema en el reporte mensual\",\n      \"description\": \"La consulta de métricas tarda más de 45 segundos en renderizarse.\",\n      \"category\": \"Rendimiento\",\n      \"priority\": \"MEDIUM\",\n      \"status\": \"OPEN\",\n      \"reportId\": \"usr-106\",\n      \"assignedAggentId\": \"agt-204\",\n      \"createdAt\": \"2026-09-14T10:10:00Z\",\n      \"updatedAt\": \"2026-09-14T10:10:00Z\"\n    },\n    {\n      \"id\": \"inc-007\",\n      \"title\": \"Correos de confirmación no se están enviando\",\n      \"description\": \"El servicio de SendGrid bloqueó la clave de API por superar la cuota temporal.\",\n      \"category\": \"Notificaciones\",\n      \"priority\": \"HIGH\",\n      \"status\": \"CLOSED\",\n      \"reportId\": \"usr-107\",\n      \"assignedAggentId\": \"agt-203\",\n      \"createdAt\": \"2026-09-14T12:00:00Z\",\n      \"updatedAt\": \"2026-09-15T15:30:00Z\"\n    },\n    {\n      \"id\": \"inc-008\",\n      \"title\": \"Sesión expirada prematuramente en la App Móvil\",\n      \"description\": \"Los usuarios deben iniciar sesión cada 5 minutos debido a una mala expiración del JWT.\",\n      \"category\": \"Autenticación\",\n      \"priority\": \"HIGH\",\n      \"status\": \"IN_PROGRESS\",\n      \"reportId\": \"usr-108\",\n      \"assignedAggentId\": \"agt-201\",\n      \"createdAt\": \"2026-09-15T07:50:00Z\",\n      \"updatedAt\": \"2026-09-15T11:20:00Z\"\n    },\n    {\n      \"id\": \"inc-009\",\n      \"title\": \"El modo oscuro rompe el contraste en tablas\",\n      \"description\": \"Al activar el tema oscuro, las letras en las tablas permanecen de color negro.\",\n      \"category\": \"UI/UX\",\n      \"priority\": \"LOW\",\n      \"status\": \"OPEN\",\n      \"reportId\": \"usr-109\",\n      \"assignedAggentId\": \"agt-204\",\n      \"createdAt\": \"2026-09-15T13:40:00Z\",\n      \"updatedAt\": \"2026-09-15T13:40:00Z\"\n    },\n    {\n      \"id\": \"inc-010\",\n      \"title\": \"Fallo de sincronización con almacenamiento S3\",\n      \"description\": \"Los archivos adjuntos de las incidencias no se están subiendo al bucket remoto.\",\n      \"category\": \"Almacenamiento\",\n      \"priority\": \"MEDIUM\",\n      \"status\": \"OPEN\",\n      \"reportId\": \"usr-110\",\n      \"assignedAggentId\": \"agt-202\",\n      \"createdAt\": \"2026-09-15T18:00:00Z\",\n      \"updatedAt\": \"2026-09-15T18:00:00Z\"\n    }\n  ],\n  \"meta\": {\n    \"page\": 1,\n    \"pageSize\": 10,\n    \"totalItems\": 45,\n    \"totalPages\": 5\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-admin-12345",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "f8b04c47-5398-478d-9ff9-2c2e4945d55f",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-support-67890",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "39c1620d-04a0-4607-a7ce-b5c1d0c5861c",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-requester-abcde",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "13ba60bd-1c21-4885-b539-b40e09f98c9a",
+          "body": "{\n  \"message\": \"¡Usuario no autenticado!\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "99a5f6a2-fc84-4b42-afb1-a101b1721386"
+    },
+    {
+      "type": "route",
+      "uuid": "dcd8d566-c402-4778-9f70-8c7e1e993516"
+    },
+    {
+      "type": "route",
+      "uuid": "11bff881-d8f8-41e8-a2b5-d52b5b051255"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}
