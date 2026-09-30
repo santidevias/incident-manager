@@ -1,5 +1,3 @@
-// src/app/core/models/api-response.model.ts
-
 export interface PaginatedMeta {
   page: number;
   pageSize: number;

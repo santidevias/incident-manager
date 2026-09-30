@@ -2,5 +2,7 @@ import { Environment } from './environment.interface';
 
 export const environment: Environment = {
   production: false,
-  apiUrl: 'https://ias.com.co/api/v1'
+  apiUrl: 'https://ias.com.co/api/v1',
+  version: '',
+  year: '',
 };

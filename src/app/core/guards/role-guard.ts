@@ -18,7 +18,20 @@ export const hasRoleGuard = (allowedRoles: string[]): CanActivateFn => {
       return true;
     }
 
-    router.navigate(['/login']);
-    return false;
+    return router.createUrlTree(['/login']);
+  };
+};
+
+export const roleRedirectGuard = (): CanActivateFn => {
+  return () => {
+    const authService = inject(AuthService);
+    const router = inject(Router);
+    const role = authService.role();
+    if (role === 'admin') {
+      return router.createUrlTree(['/dashboard']);
+    } else if (role === 'support' || role === 'requester') {
+      return router.createUrlTree(['/incidents']);
+    }
+    return router.createUrlTree(['/login']);
   };
 };

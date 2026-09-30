@@ -5,4 +5,6 @@ export interface Environment {
     apiKey: string;
     authDomain: string;
   };
+  version: string,
+  year: string,
 }

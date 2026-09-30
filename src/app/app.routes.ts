@@ -1,25 +1,34 @@
-import { Routes } from '@angular/router';
-import { hasRoleGuard } from './core/guards/role-guard';
-import { Dashboard } from './dashboard/dashboard';
-import { Authentication } from './features/authentication/authentication';
+import { RouterOutlet, Routes } from '@angular/router';
+import { hasRoleGuard, roleRedirectGuard } from './core/guards/role-guard';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: Authentication },
   {
-    path: 'admin/dashboard',
-    component: Dashboard,
-    canActivate: [hasRoleGuard(['admin'])]
+    path: 'login',
+    loadChildren: () => import('./features/authentication/authentication.routes').then(m => m.AUTH_ROUTES)
   },
   {
-    path: 'support/incidents',
-    component: Dashboard,
-    canActivate: [hasRoleGuard(['support', 'admin'])]
-  },
-  {
-    path: 'tickets/my-requests',
-    component: Dashboard,
-    canActivate: [hasRoleGuard(['requester'])]
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [hasRoleGuard(['admin', 'support', 'requester'])],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: RouterOutlet,
+        canActivate: [roleRedirectGuard()],
+      },
+      {
+        path: 'dashboard',
+        canActivate: [hasRoleGuard(['admin'])],
+        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+      },
+      {
+        path: 'incidents',
+        canActivate: [hasRoleGuard(['admin', 'support', 'requester'])],
+        loadChildren: () => import('./features/incidents/incidents.routes').then(m => m.INCIDENTS_ROUTES)
+      }
+    ],
   },
   { path: '**', redirectTo: 'login' }
 ];
