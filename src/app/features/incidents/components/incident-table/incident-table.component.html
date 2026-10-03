@@ -1,0 +1,138 @@
+<!-- CONTENEDOR DE LA TABLA -->
+<div class="flow-root">
+  <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+      <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg bg-white">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                (click)="changeSort('id')"
+                class="cursor-pointer select-none py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 hover:bg-gray-100"
+              >
+                ID
+                @if (sortKey() === 'id') {
+                  {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                }
+              </th>
+              <th
+                scope="col"
+                (click)="changeSort('title')"
+                class="cursor-pointer select-none px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:bg-gray-100"
+              >
+                Título
+                @if (sortKey() === 'title') {
+                  {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                }
+              </th>
+              <th
+                scope="col"
+                (click)="changeSort('category')"
+                class="cursor-pointer select-none px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:bg-gray-100"
+              >
+                Categoría
+                @if (sortKey() === 'category') {
+                  {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                }
+              </th>
+              <th
+                scope="col"
+                (click)="changeSort('priority')"
+                class="cursor-pointer select-none px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:bg-gray-100"
+              >
+                Prioridad
+                @if (sortKey() === 'priority') {
+                  {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                }
+              </th>
+              <th
+                scope="col"
+                (click)="changeSort('status')"
+                class="cursor-pointer select-none px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:bg-gray-100"
+              >
+                Estado
+                @if (sortKey() === 'status') {
+                  {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                }
+              </th>
+              <th
+                scope="col"
+                (click)="changeSort('createdAt')"
+                class="cursor-pointer select-none px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hover:bg-gray-100"
+              >
+                Fecha
+                @if (sortKey() === 'createdAt') {
+                  {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                }
+              </th>
+              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <span class="sr-only">Acciones</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            @for (incident of paginatedIncidents(); track incident.id) {
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td
+                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                >
+                  {{ incident.id }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ incident.title }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ incident.category }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                  <span
+                    [className]="
+                      'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ' +
+                      getPriorityClass(incident.priority)
+                    "
+                  >
+                    {{ incident.priority | incidentPriority }}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                  <span
+                    [className]="
+                      'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ' +
+                      getStatusClass(incident.status)
+                    "
+                  >
+                    {{ incident.status | incidentState }}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ incident.createdAt | date: 'yyyy-MM-dd' }}
+                </td>
+                <td
+                  class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                >
+                  <button
+                    (click)="viewDetails(incident.id)"
+                    class="text-indigo-600 hover:text-indigo-900 cursor-pointer"
+                  >
+                    Gestionar
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-500">
+                  @if (incidentsLoading()) {
+                    <app-loading-spinner loadingText="Cargando tus datos..."> </app-loading-spinner>
+                  } @else {
+                    No se encontraron incidentes registrados de momento.
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

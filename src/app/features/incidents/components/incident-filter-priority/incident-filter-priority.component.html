@@ -1,0 +1,14 @@
+<div class="flex gap-2 items-center w-full sm:w-auto">
+  <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Prioridad:</label>
+  <select
+    [value]="priorityFilter()"
+    (change)="updatePriority($event)"
+    class="rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-indigo-500 focus:ring-indigo-500 border bg-white"
+  >
+    <option value="all">Todas</option>
+    <option value="CRITICAL">Critica</option>
+    <option value="HIGH">Alta</option>
+    <option value="MEDIUM">Media</option>
+    <option value="LOW">Baja</option>
+  </select>
+</div>

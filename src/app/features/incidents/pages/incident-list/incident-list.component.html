@@ -1,1 +1,36 @@
-<p>incident-list works!</p>
+<div class="space-y-4">
+  <!-- BARRA DE FILTROS SUPERIOR -->
+  <div
+    class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-gray-50 p-4 rounded-lg border border-gray-200"
+  >
+    <app-incident-search [searchTerm]="searchTerm()" (onUpdateSearch)="updateSearch($event)" />
+    <app-incident-filter-status
+      [statusFilter]="statusFilter()"
+      (onUpdateStatus)="updateStatus($event)"
+    />
+    <app-incident-filter-priority
+      [priorityFilter]="priorityFilter()"
+      (onUpdatePriority)="updatePriority($event)"
+    />
+  </div>
+
+  <!-- CONTENEDOR DE LA TABLA -->
+  <app-incident-table
+    [paginatedIncidents]="paginatedIncidents()"
+    [incidentsLoading]="incidentsLoading()"
+    [sortKey]="sortKey()"
+    [sortDirection]="sortDirection()"
+    (onSort)="changeSort($event)"
+    (onViewDetails)="viewDetails($event)"
+  />
+
+  <!-- CONTROL DE PAGINACIÓN -->
+  <app-incident-pagination
+    [incidentsLoading]="incidentsLoading()"
+    [processedIncidents]="processedIncidents()"
+    [currentPage]="currentPage()"
+    (onSetPage)="setPage($event)"
+    [paginationDetails]="paginationDetails()"
+    [totalPages]="totalPages()"
+  />
+</div>

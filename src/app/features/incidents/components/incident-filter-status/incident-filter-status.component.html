@@ -1,0 +1,13 @@
+<div class="flex gap-2 items-center w-full sm:w-auto">
+  <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Estado:</label>
+  <select
+    [value]="statusFilter()"
+    (change)="updateStatus($event)"
+    class="rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-indigo-500 focus:ring-indigo-500 border bg-white"
+  >
+    <option value="all">Todos</option>
+    <option value="OPEN">Abierto</option>
+    <option value="IN_PROGRESS">En Progreso</option>
+    <option value="CLOSED">Cerrado</option>
+  </select>
+</div>
