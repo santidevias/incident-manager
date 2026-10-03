@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
@@ -13,10 +12,17 @@ describe('HeaderComponent', () => {
 
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('debe crear el componente', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('debe emitir el evento toggleMenu cuando se llama a toggleMobileMenu()', () => {
+    const emitSpy = vi.spyOn(component.toggleMenu, 'emit');
+
+    component.toggleMobileMenu();
+    expect(emitSpy).toHaveBeenCalled();
   });
 });
