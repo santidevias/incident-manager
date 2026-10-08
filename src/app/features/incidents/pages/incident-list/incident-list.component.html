@@ -3,12 +3,18 @@
   <div
     class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-gray-50 p-4 rounded-lg border border-gray-200"
   >
-    <app-incident-search [searchTerm]="searchTerm()" (onUpdateSearch)="updateSearch($event)" />
+    <app-incident-search
+      data-testid="child-search"
+      [searchTerm]="searchTerm()"
+      (onUpdateSearch)="updateSearch($event)"
+    />
     <app-incident-filter-status
+      data-testid="child-status"
       [statusFilter]="statusFilter()"
       (onUpdateStatus)="updateStatus($event)"
     />
     <app-incident-filter-priority
+      data-testid="child-priority"
       [priorityFilter]="priorityFilter()"
       (onUpdatePriority)="updatePriority($event)"
     />
@@ -16,6 +22,7 @@
 
   <!-- CONTENEDOR DE LA TABLA -->
   <app-incident-table
+    data-testid="child-table"
     [paginatedIncidents]="paginatedIncidents()"
     [incidentsLoading]="incidentsLoading()"
     [sortKey]="sortKey()"
@@ -26,6 +33,7 @@
 
   <!-- CONTROL DE PAGINACIÓN -->
   <app-incident-pagination
+    data-testid="child-pagination"
     [incidentsLoading]="incidentsLoading()"
     [processedIncidents]="processedIncidents()"
     [currentPage]="currentPage()"

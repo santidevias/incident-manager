@@ -1,6 +1,7 @@
 <div class="flex gap-2 items-center w-full sm:w-auto">
   <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Estado:</label>
   <select
+    data-testid="status-filter-select"
     [value]="statusFilter()"
     (change)="updateStatus($event)"
     class="rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-indigo-500 focus:ring-indigo-500 border bg-white"
