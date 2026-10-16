@@ -18,6 +18,14 @@
       [priorityFilter]="priorityFilter()"
       (onUpdatePriority)="updatePriority($event)"
     />
+    <div class="flex gap-2 items-center w-full sm:w-auto">
+      <button
+        (click)="openModal()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out transform hover:-translate-y-0.5"
+      >
+        Agregar ticket
+      </button>
+    </div>
   </div>
 
   <!-- CONTENEDOR DE LA TABLA -->
@@ -41,4 +49,14 @@
     [paginationDetails]="paginationDetails()"
     [totalPages]="totalPages()"
   />
+  @if (isOpen()) {
+    <app-incident-modal-form
+      [incidentToEdit]="incidentSelected()"
+      [currentRole]="role()"
+      [isOpen]="isOpen()"
+      (onSave)="onSave($event)"
+      (onClose)="modalClose()"
+      (onDelete)="onDelete($event)"
+    />
+  }
 </div>

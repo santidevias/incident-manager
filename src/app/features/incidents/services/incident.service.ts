@@ -14,6 +14,8 @@ export class IncidentService {
     stream: () =>
       this.http.get<ApiResponse<Incident[]>>(`${this.apiUrl}/incidents`)
   });
+  public selectedIncident = signal<Incident | undefined>(undefined);
+
   incidents = computed(() => this.incidentResource.value()?.data ?? []);
 
   searchTerm = signal<string>('');
@@ -125,4 +127,45 @@ export class IncidentService {
   }
 
   loading = this.incidentResource.isLoading;
+
+  searchIndicent(id: string) {
+    return this.processedIncidents().find(record => record.id === id);
+  }
+
+  setIncident(id: string) {
+    const incident = this.searchIndicent(id);
+    this.selectedIncident.set(incident)
+  }
+
+  updateIncidentList(form: Incident) {
+    this.incidentResource.value.update(currentValue => {
+      // 1. Si el recurso no tiene datos aún (o falló la carga), inicializamos la estructura
+      if (!currentValue) {
+        return { data: [form] } as ApiResponse<Incident[]>;
+      }
+
+      // 2. Comprobamos si el ticket ya existe en la lista actual
+      const exits = currentValue.data.some(inc => inc.id === form.id);
+
+      return {
+        ...currentValue,
+        data: exits
+          ? currentValue.data.map(inc =>
+            inc.id === form.id ? { ...inc, ...form } : inc
+          ) // Si existe: Reemplaza con los nuevos datos
+          : [...currentValue.data, form] // Si no existe: Lo agrega al final
+      };
+    });
+  }
+
+  deleteIncidentList(idIncident: string) {
+    this.incidentResource.value.update(currentValue => {
+      if (!currentValue) return currentValue;
+
+      return {
+        ...currentValue,
+        data: currentValue.data.filter(incident => incident.id !== idIncident)
+      };
+    });
+  }
 }

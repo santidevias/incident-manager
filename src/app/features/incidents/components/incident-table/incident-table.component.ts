@@ -45,5 +45,4 @@ export class IncidentTableComponent {
   viewDetails(id: string) {
     this.onViewDetails.emit(id);
   }
-
 }

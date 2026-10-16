@@ -13,6 +13,16 @@ export interface Incident {
   updatedAt: string;
 }
 
+export interface Agent {
+  id: string,
+  name: string,
+}
+
+export interface Category {
+  id: string,
+  name: string,
+}
+
 export interface IncidentDashboardStats {
   total: number;
   open: number;
