@@ -46,9 +46,9 @@ export class AuthService {
 
   role = computed(() => {
     if (!isPlatformBrowser(this.platformId)) {
-      return "";
+      return "requester";
     }
-    return this.currentUser()?.role ?? "";
+    return this.currentUser()?.role ?? "requester";
   });
 
   roleInitial = computed(() => {
