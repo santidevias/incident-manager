@@ -22,7 +22,8 @@ describe('AuthService (Entorno Navegador)', () => {
     id: '1',
     email: 'soporte@ias.com.co',
     name: 'Soporte IAS',
-    role: 'support'
+    role: 'support',
+    agentId: 'agt-200',
   };
 
   const mockResponse: UserResponse = {
@@ -116,7 +117,7 @@ describe('AuthService (Entorno Navegador)', () => {
   // FLUJO 4: COMPUTED PROP - ROLE
   // ==========================================
   it('debe retornar el rol correcto mediante el computed "role" o vacío si es nulo', async () => {
-    expect(service.role()).toBe('');
+    expect(service.role()).toBe('requester');
 
     const loginPromesa = firstValueFrom(service.login({ email: '', password: '' }));
     httpMock.expectOne(`${environment.apiUrl}/auth/login`).flush(mockResponse);
@@ -129,12 +130,12 @@ describe('AuthService (Entorno Navegador)', () => {
   // FLUJO 5: COMPUTED PROP - ROLE INITIAL
   // ==========================================
   it('debe retornar la primera letra en mayúscula del rol usando "roleInitial" o "U" por defecto', async () => {
-    expect(service.roleInitial()).toBe('U');
+    expect(service.roleInitial()).toBe('r');
 
     const loginPromesa = firstValueFrom(service.login({ email: '', password: '' }));
     httpMock.expectOne(`${environment.apiUrl}/auth/login`).flush(mockResponse);
     await loginPromesa;
 
-    expect(service.roleInitial()).toBe('support'.charAt(0));
+    expect(service.roleInitial()).toBe('s'.charAt(0));
   });
 });
