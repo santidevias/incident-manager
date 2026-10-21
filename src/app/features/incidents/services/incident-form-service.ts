@@ -24,9 +24,9 @@ export class IncidentFormService {
       priority: [incident?.priority ?? 'LOW' as IncidentPriority, Validators.required],
       status: [incident?.status ?? 'OPEN' as IncidentStatus, Validators.required],
       reportId: [incident?.reportId ?? this.getCurrentUser()],
-      assignedAggentId: [incident?.assignedAggentId ?? ''],
+      assignedAgentId: [incident?.assignedAgentId ?? ''],
       createdAt: [incident?.createdAt ?? new Date().toISOString()],
-      updatedAt: [new Date().toISOString()] // Siempre se actualiza al abrir/guardar
+      updatedAt: [new Date().toISOString()],
     });
 
     // Aplicar restricciones basadas en Roles (Seguridad a nivel de Formulario)
@@ -51,16 +51,22 @@ export class IncidentFormService {
         // En creación, no puede asignarse agente ni cambiar estado/prioridad
         form.get('status')?.disable();
         form.get('priority')?.disable();
-        form.get('assignedAggentId')?.disable();
+        form.get('assignedAgentId')?.disable();
       }
     }
 
     // 3. Restricciones para el Agente de Soporte
     if (role === 'support') {
-      // El agente atiende el problema, no debería editar la queja inicial del usuario
-      form.get('title')?.disable();
-      form.get('description')?.disable();
-      form.get('category')?.disable();
+      // El agente atiende el problema, no debería editar la queja inicial del usuario y no puede asignarle un agente diferente
+      if (isEdit && form.get('status').value === 'CLOSED') {
+        form.disable();
+      } else if (isEdit) {
+        form.get('title')?.disable();
+        form.get('priority')?.disable();
+        form.get('description')?.disable();
+        form.get('category')?.disable();
+        form.get('assignedAgentId')?.disable();
+      }
     }
 
     // Nota: El 'admin' no entra a estos ifs, por lo que tiene todos los campos activos.
