@@ -9,37 +9,6 @@
   "folders": [],
   "routes": [
     {
-      "uuid": "99a5f6a2-fc84-4b42-afb1-a101b1721386",
-      "type": "http",
-      "documentation": "",
-      "method": "get",
-      "endpoint": "",
-      "responses": [
-        {
-          "uuid": "c7940e9c-34fd-4fd7-ad43-b76025f4ccb3",
-          "body": "{}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null,
-      "streamingMode": null,
-      "streamingInterval": 0
-    },
-    {
       "uuid": "dcd8d566-c402-4778-9f70-8c7e1e993516",
       "type": "http",
       "documentation": "",
@@ -48,7 +17,7 @@
       "responses": [
         {
           "uuid": "8ee0f8af-0941-4cf3-bd5c-313b721710f1",
-          "body": "{\n  \"token\": \"mock-jwt-token-admin-12345\",\n  \"user\": {\n    \"email\": \"admin@ias.com.co\",\n    \"name\": \"Santiago Administrador\",\n    \"role\": \"admin\"\n  }\n}",
+          "body": "{\n  \"token\": \"mock-jwt-token-admin-12345\",\n  \"user\": {\n    \"id\": \"usr-101\",\n    \"email\": \"admin@ias.com.co\",\n    \"name\": \"Santiago Castrillón\",\n    \"role\": \"admin\",\n    \"aggentId\": \"agt-200\"\n  }\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -75,7 +44,7 @@
         },
         {
           "uuid": "a79c3ac1-e86d-4005-b680-d194009fe456",
-          "body": "{\n  \"token\": \"mock-jwt-token-support-67890\",\n  \"user\": {\n    \"email\": \"soporte@ias.com.co\",\n    \"name\": \"Agente Soporte\",\n    \"role\": \"support\"\n  }\n}",
+          "body": "{\n  \"token\": \"mock-jwt-token-support-67890\",\n  \"user\": {\n    \"id\": \"usr-110\",\n    \"email\": \"soporte@ias.com.co\",\n    \"name\": \"Edgar Rivero\",\n    \"role\": \"support\",\n    \"aggentId\": \"agt-205\"\n  }\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -102,7 +71,7 @@
         },
         {
           "uuid": "631297b1-0fb7-41bf-87fb-2fef64edb917",
-          "body": "{\n  \"token\": \"mock-jwt-token-requester-abcde\",\n  \"user\": {\n    \"email\": \"solicitante@ias.com.co\",\n    \"name\": \"Usuario Solicitante\",\n    \"role\": \"requester\"\n  }\n}",
+          "body": "{\n  \"token\": \"mock-jwt-token-requester-abcde\",\n  \"user\": {\n    \"id\": \"usr-120\",\n    \"email\": \"solicitante@ias.com.co\",\n    \"name\": \"Manuel Cuevas\",\n    \"role\": \"requester\",\n    \"aggentId\": \"agt-206\"\n  }\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -156,7 +125,7 @@
       "type": "http",
       "documentation": "Esta es una ruta de incidencias, aquí mostrará todas las incidencias",
       "method": "get",
-      "endpoint": "api/v1/incidents",
+      "endpoint": "api/v1/incidents_old",
       "responses": [
         {
           "uuid": "f3e43ad9-d8a1-4eb5-ba0b-ec765b7f5c7d",
@@ -262,20 +231,360 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "062c5c8f-c48e-42b6-8fc5-4bb01d8fb717",
+      "type": "http",
+      "documentation": "Esta es una ruta de incidencias, aquí mostrará todas las incidencias",
+      "method": "get",
+      "endpoint": "api/v1/incidents",
+      "responses": [
+        {
+          "uuid": "6c828dcc-bde3-484f-96b9-dc095d3cf9fc",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Incidencias recuperadas exitosamente\",\n  \"data\": [\n    {{# repeat (parseInt (queryParam 'pageSize' '50')) }}\n    {\n      \"id\": \"INC-{{padStart @index 8 '0'}}\",\n      \"title\": \"{{faker 'lorem.sentence' 5}}\",\n      \"description\": \"{{faker 'lorem.paragraph' 5}}\",\n      \"category\": \"{{oneOf (array 'Infraestructura' 'Pagos' 'Facturación' 'UI/UX' 'Seguridad')}}\",\n      \"priority\": \"{{oneOf (array 'CRITICAL' 'HIGH' 'MEDIUM' 'LOW')}}\",\n      \"status\": \"{{oneOf (array 'OPEN' 'IN_PROGRESS' 'CLOSED')}}\",\n      \"reportId\": \"usr-{{oneOf (array 100 110 120)}}\",\n      \"assignedAgentId\": \"agt-{{oneOf (array 200 205 206)}}\",\n      \"createdAt\": \"{{faker 'date.past' 1}}\",\n      \"updatedAt\": \"{{faker 'date.recent' 1}}\"\n    }{{#unless @last}},{{/unless}}\n    {{/ repeat }}\n  ]\n}\n",
+          "latency": 5000,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-admin-12345",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "f49514eb-c470-4bfc-8513-f60b333ed4da",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Incidencias recuperadas exitosamente\",\n  \"data\": [\n    {{# repeat (parseInt (queryParam 'pageSize' '20')) }}\n    {\n      \"id\": \"INC-{{padStart @index 8 '0'}}\",\n      \"title\": \"{{faker 'lorem.sentence' 5}}\",\n      \"description\": \"{{faker 'lorem.paragraph' 5}}\",\n      \"category\": \"{{oneOf (array 'Infraestructura' 'Pagos' 'Facturación' 'UI/UX' 'Seguridad')}}\",\n      \"priority\": \"{{oneOf (array 'CRITICAL' 'HIGH' 'MEDIUM' 'LOW')}}\",\n      \"status\": \"{{oneOf (array 'OPEN' 'IN_PROGRESS' 'CLOSED')}}\",\n      \"reportId\": \"usr-{{oneOf (array 100 120)}}\",\n      \"assignedAgentId\": \"agt-{{oneOf (array 205)}}\",\n      \"createdAt\": \"{{faker 'date.past' 1}}\",\n      \"updatedAt\": \"{{faker 'date.recent' 1}}\"\n    }{{#unless @last}},{{/unless}}\n    {{/ repeat }}\n  ]\n}\n",
+          "latency": 3000,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-support-67890",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "11fb78da-21b7-4001-870e-fbb50c13d7ca",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Incidencias recuperadas exitosamente\",\n  \"data\": [\n    {{# repeat (parseInt (queryParam 'pageSize' '10')) }}\n    {\n      \"id\": \"INC-{{padStart @index 8 '0'}}\",\n      \"title\": \"{{faker 'lorem.sentence' 5}}\",\n      \"description\": \"{{faker 'lorem.paragraph' 5}}\",\n      \"category\": \"{{oneOf (array 'Infraestructura' 'Pagos' 'Facturación' 'UI/UX' 'Seguridad')}}\",\n      \"priority\": \"{{oneOf (array 'CRITICAL' 'HIGH' 'MEDIUM' 'LOW')}}\",\n      \"status\": \"{{oneOf (array 'OPEN' 'IN_PROGRESS' 'CLOSED')}}\",\n      \"reportId\": \"usr-{{oneOf (array 120)}}\",\n      \"assignedAgentId\": \"agt-{{oneOf (array 200 205)}}\",\n      \"createdAt\": \"{{faker 'date.past' 1}}\",\n      \"updatedAt\": \"{{faker 'date.recent' 1}}\"\n    }{{#unless @last}},{{/unless}}\n    {{/ repeat }}\n  ]\n}\n",
+          "latency": 2000,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-requester-abcde",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "ec43c07a-be64-47dc-82ff-cfce59edb224",
+          "body": "{\n  \"message\": \"¡Usuario no autenticado!\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "a4fda3f5-64e9-4d8b-86e5-e6958d62b859",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/v1/agents",
+      "responses": [
+        {
+          "uuid": "5b7eb7f9-6df2-4887-873c-901405e8224f",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Agentes recuperados con éxito!\",\n  \"data\": [\n    {\n      \"id\": \"agt-200\",\n      \"name\": \"Santiago Castrillón\"\n    },\n    {\n      \"id\": \"agt-205\",\n      \"name\": \"Edgar Rivero\"\n    },\n    {\n      \"id\": \"agt-206\",\n      \"name\": \"Manuel Cuevas\"\n    }\n  ]\n}\n",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Todos",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-admin-12345",
+              "invert": false,
+              "operator": "regex"
+            },
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-support-67890",
+              "invert": false,
+              "operator": "regex"
+            },
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-requester-abcde",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "3bd53d69-6df2-4bb8-b761-9c7c98b835ca",
+          "body": "{\n  \"message\": \"¡Usuario no autenticado!\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "94d163fe-e0f7-4375-a495-4fce8d3ef215",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/v1/incidents/categories",
+      "responses": [
+        {
+          "uuid": "585989b8-6cd8-4b25-bbf0-489cc2af2b29",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Categorías recuperados con éxito!\",\n  \"data\": [\n    {\n      \"id\": \"Infraestructura\",\n      \"name\": \"Infraestructura\"\n    },\n    {\n      \"id\": \"Pagos\",\n      \"name\": \"Pagos\"\n    },\n    {\n      \"id\": \"Facturación\",\n      \"name\": \"Facturación\"\n    },\n    {\n      \"id\": \"UI/UX\",\n      \"name\": \"UI/UX\"\n    },\n    {\n      \"id\": \"Seguridad\",\n      \"name\": \"Seguridad\"\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Todos",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-admin-12345",
+              "invert": false,
+              "operator": "regex"
+            },
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-support-67890",
+              "invert": false,
+              "operator": "regex"
+            },
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-requester-abcde",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "7a1388e0-5869-4742-b034-f20a3264927b",
+          "body": "{\n  \"message\": \"¡Usuario no autenticado!\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "c72b08cd-d205-4360-a549-2374fb4d7e98",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/v1/users",
+      "responses": [
+        {
+          "uuid": "4342016c-1a0a-4a9e-bb32-5d225eee797b",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Usuarios recuperados con éxito!\",\n  \"data\": [\n    {\n      \"id\": \"usr-100\",\n      \"name\": \"Santiago Castrillón Sánchez\"\n    },\n    {\n      \"id\": \"usr-110\",\n      \"name\": \"Edgar Rivero\"\n    },\n    {\n      \"id\": \"usr-120\",\n      \"name\": \"Manuel Cuevas\"\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Todos",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-admin-12345",
+              "invert": false,
+              "operator": "regex"
+            },
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-support-67890",
+              "invert": false,
+              "operator": "regex"
+            },
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer mock-jwt-token-requester-abcde",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "f970256f-7c11-4501-b268-d81a139af90e",
+          "body": "{\n  \"message\": \"¡Usuario no autenticado!\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
-    {
-      "type": "route",
-      "uuid": "99a5f6a2-fc84-4b42-afb1-a101b1721386"
-    },
     {
       "type": "route",
       "uuid": "dcd8d566-c402-4778-9f70-8c7e1e993516"
     },
     {
       "type": "route",
+      "uuid": "c72b08cd-d205-4360-a549-2374fb4d7e98"
+    },
+    {
+      "type": "route",
+      "uuid": "a4fda3f5-64e9-4d8b-86e5-e6958d62b859"
+    },
+    {
+      "type": "route",
+      "uuid": "062c5c8f-c48e-42b6-8fc5-4bb01d8fb717"
+    },
+    {
+      "type": "route",
       "uuid": "11bff881-d8f8-41e8-a2b5-d52b5b051255"
+    },
+    {
+      "type": "route",
+      "uuid": "94d163fe-e0f7-4375-a495-4fce8d3ef215"
     }
   ],
   "proxyMode": false,
