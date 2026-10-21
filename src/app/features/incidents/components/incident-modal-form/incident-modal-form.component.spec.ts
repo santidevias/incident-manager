@@ -19,7 +19,7 @@ describe('IncidentModalFormComponent', () => {
   let mockCategoryService: any;
   let mockFormService: any;
 
-  const mockUser: User = { id: 'usr-100', name: 'Usuario Prueba', role: 'ADMIN' as UserRole, aggentId: "agt-200", email: "support@ias.com.co" };
+  const mockUser: User = { id: 'usr-100', name: 'Usuario Prueba', role: 'ADMIN' as UserRole, agentId: "agt-200", email: "support@ias.com.co" };
   const mockAgent = { id: 'agt-200', name: 'Agente Asignado' };
 
   const mockIncident: Incident = {
