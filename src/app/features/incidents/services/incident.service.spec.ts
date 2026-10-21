@@ -19,7 +19,7 @@ describe('IncidentService', () => {
       "priority": "HIGH",
       "status": "OPEN",
       "reportId": "usr-120",
-      "assignedAggentId": "agt-200",
+      "assignedAgentId": "agt-200",
       "createdAt": "2026-03-01T10:00:00.000Z",
       "updatedAt": "2026-03-01T19:52:00.000Z"
     },
@@ -31,7 +31,7 @@ describe('IncidentService', () => {
       "priority": "HIGH",
       "status": "IN_PROGRESS",
       "reportId": "usr-100",
-      "assignedAggentId": "agt-205",
+      "assignedAgentId": "agt-205",
       "createdAt": "2026-03-03T14:00:00.000Z",
       "updatedAt": "2026-03-03T16:23:00.000Z"
     },
@@ -43,7 +43,7 @@ describe('IncidentService', () => {
       "priority": "LOW",
       "status": "CLOSED",
       "reportId": "usr-110",
-      "assignedAggentId": "agt-205",
+      "assignedAgentId": "agt-205",
       "createdAt": "2026-03-02T08:00:00.000Z",
       "updatedAt": "2026-03-02T21:20:00.000Z"
     },
@@ -55,7 +55,7 @@ describe('IncidentService', () => {
       "priority": "MEDIUM",
       "status": "OPEN",
       "reportId": "usr-120",
-      "assignedAggentId": "agt-205",
+      "assignedAgentId": "agt-205",
       "createdAt": "2026-03-04T09:00:00.000Z",
       "updatedAt": "2026-03-05T05:44:00.000Z"
     },
@@ -67,7 +67,7 @@ describe('IncidentService', () => {
       "priority": "LOW",
       "status": "OPEN",
       "reportId": "usr-110",
-      "assignedAggentId": "agt-205",
+      "assignedAgentId": "agt-205",
       "createdAt": "2026-03-05T11:00:00.000Z",
       "updatedAt": "2026-03-06T08:31:00.000Z"
     },
@@ -79,7 +79,7 @@ describe('IncidentService', () => {
       "priority": "HIGH",
       "status": "OPEN",
       "reportId": "usr-120",
-      "assignedAggentId": "agt-200",
+      "assignedAgentId": "agt-200",
       "createdAt": "2026-03-06T12:00:00.000Z",
       "updatedAt": "2026-03-06T15:17:00.000Z"
     }
@@ -219,4 +219,108 @@ describe('IncidentService', () => {
       expect(service.totalPages()).toBe(1);
     });
   });
+
+  // ==========================================
+  // FLUJO 5: GESTIÓN DE INCIDENTE SELECCIONADO
+  // ==========================================
+  describe('Selección de Incidentes (setIncident)', () => {
+    it('debe buscar un incidente existente por ID y asignarlo a selectedIncident', () => {
+      // Act: Buscamos el incidente "inc-001"
+      service.setIncident('inc-001');
+
+      // Assert: Validamos que la señal tenga el objeto correcto
+      const selected = service.selectedIncident();
+      expect(selected).toBeDefined();
+      expect(selected?.id).toBe('inc-001');
+      expect(selected?.title).toBe('Error de Login');
+    });
+
+    it('debe asignar undefined a selectedIncident si el ID no existe', () => {
+      // Act: Pasamos un ID inexistente
+      service.setIncident('id-falso');
+
+      // Assert: Debe ser undefined
+      expect(service.selectedIncident()).toBeUndefined();
+    });
+  });
+
+  // ==========================================
+  // FLUJO 6: MUTACIÓN DE LA LISTA (rxResource value updates)
+  // ==========================================
+  describe('Modificación de la Lista de Incidentes', () => {
+
+    describe('updateIncidentList', () => {
+      it('debe agregar un incidente nuevo al final si no existe en la lista', () => {
+        const newIncident: Incident = {
+          id: 'inc-007',
+          title: 'Nuevo Incidente de Prueba',
+          description: 'Descripción de prueba',
+          category: 'UI/UX',
+          priority: 'LOW',
+          status: 'OPEN',
+          reportId: 'usr-120',
+          assignedAgentId: 'agt-200',
+          createdAt: '2026-03-07T10:00:00.000Z',
+          updatedAt: '2026-03-07T10:00:00.000Z'
+        };
+
+        // Act
+        service.updateIncidentList(newIncident);
+
+        // Assert: El número total en la señal base debe ser 7
+        const incidentTotal = service.incidents();
+        expect(incidentTotal.length).toBe(7);
+
+        // Comprobar que se añadió correctamente buscando por ID
+        const add = incidentTotal.find(i => i.id === 'inc-007');
+        expect(add).toBeDefined();
+        expect(add?.title).toBe('Nuevo Incidente de Prueba');
+      });
+
+      it('debe actualizar los datos de un incidente si este ya existe en la lista', () => {
+        // Clonamos y modificamos un incidente existente (ej: inc-001)
+        const incidenteModificado: Incident = {
+          ...mockIncidents[0],
+          title: 'Error de Login - ACTUALIZADO',
+          status: 'IN_PROGRESS'
+        };
+
+        // Act
+        service.updateIncidentList(incidenteModificado);
+
+        // Assert: El tamaño se debe mantener en 6
+        const incidentTotal = service.incidents();
+        expect(incidentTotal.length).toBe(6);
+
+        // El registro "inc-001" debe reflejar los cambios
+        const update = incidentTotal.find(i => i.id === 'inc-001');
+        expect(update?.title).toBe('Error de Login - ACTUALIZADO');
+        expect(update?.status).toBe('IN_PROGRESS');
+      });
+    });
+
+    describe('deleteIncidentList', () => {
+      it('debe eliminar un incidente de la lista mediante su ID', () => {
+        // Act: Eliminamos el "inc-002"
+        service.deleteIncidentList('inc-002');
+
+        // Assert: El total debe bajar a 5
+        const incidentTotal = service.incidents();
+        expect(incidentTotal.length).toBe(5);
+
+        // Validar que ya no exista el ID eliminado
+        const deleted = incidentTotal.find(i => i.id === 'inc-002');
+        expect(deleted).toBeUndefined();
+      });
+
+      it('no debe alterar la lista si se intenta eliminar un ID que no existe', () => {
+        // Act
+        service.deleteIncidentList('id-inexistente');
+
+        // Assert
+        expect(service.incidents().length).toBe(6);
+      });
+    });
+  });
+
 });

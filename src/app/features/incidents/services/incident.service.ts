@@ -3,14 +3,20 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from '../../../../environments/environment';
 import { ApiResponse } from '../../../core/models/api-response.model';
+import { AuthService } from '../../../core/services/auth.service';
 import { Incident } from '../models/incident.model';
 
 
 @Injectable({ providedIn: 'root' })
 export class IncidentService {
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private readonly apiUrl = environment.apiUrl;
   private incidentResource = rxResource({
+    params: () => {
+      const user = this.authService.currentUser();
+      return user ? { userId: user.id } : null;
+    },
     stream: () =>
       this.http.get<ApiResponse<Incident[]>>(`${this.apiUrl}/incidents`)
   });
