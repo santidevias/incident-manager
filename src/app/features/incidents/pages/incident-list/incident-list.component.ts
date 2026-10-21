@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ToastService } from '../../../../core/services/toast-service';
 import { IncidentFilterPriorityComponent } from '../../components/incident-filter-priority/incident-filter-priority.component';
 import { IncidentFilterStatusComponent } from '../../components/incident-filter-status/incident-filter-status.component';
 import { IncidentModalFormComponent } from '../../components/incident-modal-form/incident-modal-form.component';
@@ -20,6 +21,7 @@ export class IncidentListComponent {
   private incident_service = inject(IncidentService);
   protected auth_service = inject(AuthService);
   protected modal_service = inject(ModalService);
+  private toastService = inject(ToastService);
   incidents = this.incident_service.incidents;
   incidentsLoading = this.incident_service.loading;
 
@@ -43,6 +45,14 @@ export class IncidentListComponent {
 
   role = this.auth_service.role;
   currentUser = this.auth_service.currentUser;
+
+  constructor() {
+    effect(() => {
+      if (!this.incident_service.loading()) {
+        this.toastService.showSuccess('Lista de incidentes cargada con éxito!.')
+      }
+    })
+  }
 
 
   protected changeSort(key: string) {
@@ -76,11 +86,13 @@ export class IncidentListComponent {
 
   onSave(value: Incident) {
     this.incident_service.updateIncidentList(value);
+    this.toastService.showSuccess('Actualización de incidente con éxito!');
     this.modalClose();
   }
 
   onDelete(incident: Incident) {
     this.incident_service.deleteIncidentList(incident.id);
+    this.toastService.showSuccess(`Eliminación de incidente ${incident.id} con éxito!`, 5000);
     this.modalClose();
   }
 

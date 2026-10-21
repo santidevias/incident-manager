@@ -132,7 +132,7 @@ export class IncidentService {
     this.currentPage.set(1);
   }
 
-  loading = this.incidentResource.isLoading;
+  loading = computed(() => this.incidentResource.isLoading());
 
   searchIndicent(id: string) {
     return this.processedIncidents().find(record => record.id === id);
