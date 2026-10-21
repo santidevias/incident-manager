@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { UserRole } from '../../../../core/models/auth.model';
+import { User, UserRole } from '../../../../core/models/auth.model';
 import { Selectable } from '../../../../core/models/selectable.model';
+import { ProfileService } from '../../../../core/services/profile-service';
 import { SelectionFormComponent } from '../../../../shared/components/selection-form/selection-form.component';
 import { Incident } from '../../models/incident.model';
-import { AgentService } from '../../services/agent-service';
 import { CategoryService } from '../../services/category-service';
 import { IncidentFormService } from '../../services/incident-form-service';
 
@@ -16,7 +16,8 @@ import { IncidentFormService } from '../../services/incident-form-service';
   styleUrl: './incident-modal-form.component.css',
 })
 export class IncidentModalFormComponent implements OnInit {
-  private agentService = inject(AgentService);
+  private profileService = inject(ProfileService);
+
   private categoryService = inject(CategoryService);
   private formService = inject(IncidentFormService);
   protected statusIncident = signal<Selectable[]>([
@@ -38,11 +39,23 @@ export class IncidentModalFormComponent implements OnInit {
   isOpen = input.required<boolean>();
   incidentToEdit = input<Incident>();
   currentRole = input.required<UserRole>();
+  currentUser = input.required<User | null>();
 
   protected onSave = output<Incident>();
   protected onDelete = output<Incident>();
   protected onClose = output();
-  protected agents = this.agentService.assignedAggents;
+  protected agents = this.profileService.assignedAgents;
+  public agentSelected = computed(() => {
+    const id = this.incidentToEdit()?.assignedAgentId;
+    if (!id) return null; // Si no hay usuario o ID, retornamos null
+    return this.profileService.assignedAgents().find(agent => agent.id === id)?.name || null;
+  });
+  public userSelected = computed(() => {
+    const id = this.incidentToEdit()?.reportId ?? this.currentUser()?.id;
+    if (!id) return null;
+
+    return this.profileService.users().find(user => (user.id === id))?.name || null;
+  });
   protected categories = this.categoryService.categories;
 
   form!: FormGroup;
@@ -55,7 +68,7 @@ export class IncidentModalFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isEdit = !!this.incidentToEdit;
+    this.isEdit = !!this.incidentToEdit();
     this.form = this.formService.buildForm(this.currentRole(), this.incidentToEdit());
   }
 

@@ -20,15 +20,13 @@
         <!-- Área de campos con scroll -->
         <div class="p-6 py-4 overflow-y-auto flex-1 text-slate-700 space-y-4">
           <!-- Título -->
-          @if (currentRole() !== 'support') {
-            <div>
-              <label class="block text-sm font-semibold mb-1 text-slate-600">Título</label>
-              <input
-                formControlName="title"
-                class="w-full border border-slate-300 p-2.5 rounded-lg bg-slate-50 text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium disabled:bg-slate-100"
-              />
-            </div>
-          }
+          <div>
+            <label class="block text-sm font-semibold mb-1 text-slate-600">Título</label>
+            <input
+              formControlName="title"
+              class="w-full border border-slate-300 p-2.5 rounded-lg bg-slate-50 text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium disabled:bg-slate-100"
+            />
+          </div>
 
           <!-- Descripción -->
           <div>
@@ -41,14 +39,18 @@
 
           <!-- Selectores personalizados -->
           <div class="space-y-4">
+            @if (currentRole() === 'admin') {
+              <app-selection-form
+                [control]="form.get('assignedAgentId')"
+                idElement="'assignedAgentId'"
+                [labelName]="'Asignado'"
+                [items]="agents()"
+                [defaultValue]="form.get('assignedAgentId')?.value"
+                (selectionChange)="onSelected($event, 'assignedAgentId')"
+              />
+            }
             <app-selection-form
-              idElement="'assignedAggentId'"
-              [labelName]="'Asignado'"
-              [items]="agents()"
-              [defaultValue]="form.get('assignedAggentId')?.value"
-              (selectionChange)="onSelected($event, 'assignedAggentId')"
-            />
-            <app-selection-form
+              [control]="form.get('category')"
               idElement="'category'"
               [labelName]="'Categoría'"
               [items]="categories()"
@@ -56,6 +58,7 @@
               (selectionChange)="onSelected($event, 'category')"
             />
             <app-selection-form
+              [control]="form.get('priority')"
               idElement="'priority'"
               [labelName]="'Prioridad'"
               [items]="priorityIncident()"
@@ -63,6 +66,7 @@
               (selectionChange)="onSelected($event, 'priority')"
             />
             <app-selection-form
+              [control]="form.get('status')"
               idElement="'status'"
               [labelName]="'Estado'"
               [items]="statusIncident()"
@@ -72,23 +76,34 @@
           </div>
 
           <!-- Campos ocultos / Metadata -->
-          <div
-            class="text-xs text-slate-500 mt-6 space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100"
-          >
-            <p><span class="font-medium text-slate-600">ID:</span> {{ form.get('id')?.value }}</p>
-            @if (currentRole() === 'admin') {
-              <p>
-                <span class="font-medium text-slate-600">Reportado por:</span>
-                {{ form.get('reportId')?.value }}
-              </p>
-            }
-            @if (isEdit) {
+          @if (isEdit) {
+            <div
+              class="text-xs text-slate-500 mt-6 space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100"
+            >
+              <p><span class="font-medium text-slate-600">ID:</span> {{ form.get('id')?.value }}</p>
+              @if (currentUser() && userSelected()) {
+                <p>
+                  <span class="font-medium text-slate-600">Reportado por:</span>
+                  {{ userSelected() }}
+                </p>
+              }
+              @if (agentSelected()) {
+                <p>
+                  <span class="font-medium text-slate-600">Asignado a:</span>
+                  {{ agentSelected() }}
+                </p>
+              }
+
               <p>
                 <span class="font-medium text-slate-600">Creado el:</span>
                 {{ form.get('createdAt')?.value | date: "dd 'de' MMMM 'de' yyyy 'a las' HH:mm" }}
               </p>
-            }
-          </div>
+              <p>
+                <span class="font-medium text-slate-600">Última actualización:</span>
+                {{ incidentToEdit()?.updatedAt | date: "dd 'de' MMMM 'de' yyyy 'a las' HH:mm" }}
+              </p>
+            </div>
+          }
         </div>
 
         <!-- Pie de Modal / Botones Fijos -->
