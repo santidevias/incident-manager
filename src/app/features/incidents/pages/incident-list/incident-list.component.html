@@ -53,6 +53,7 @@
     <app-incident-modal-form
       [incidentToEdit]="incidentSelected()"
       [currentRole]="role()"
+      [currentUser]="currentUser()"
       [isOpen]="isOpen()"
       (onSave)="onSave($event)"
       (onClose)="modalClose()"

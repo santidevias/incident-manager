@@ -42,6 +42,7 @@ export class IncidentListComponent {
   incidentSelected = this.incident_service.selectedIncident;
 
   role = this.auth_service.role;
+  currentUser = this.auth_service.currentUser;
 
 
   protected changeSort(key: string) {
