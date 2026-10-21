@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { User } from '../../core/models/auth.model';
 import { AuthService } from '../../core/services/auth.service';
 import { SidebarComponent } from './sidebar.component';
 
@@ -11,11 +12,16 @@ describe('SidebarComponent', () => {
     logout: vi.fn(),
     role: signal('admin'),
     roleInitial: signal('a'),
+    currentUser: signal<User>({
+      id: "usr-101",
+      name: "User name",
+      email: "support@ias.com.co",
+      agentId: "agt-101",
+      role: "support",
+    })
   };
 
   beforeEach(async () => {
-
-
     await TestBed.configureTestingModule({
       imports: [SidebarComponent],
       providers: [

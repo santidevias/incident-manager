@@ -1,10 +1,11 @@
 import { Component, inject, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { RoleUserPipe } from '../../shared/pipes/role-user-pipe';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, RoleUserPipe],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
