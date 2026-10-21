@@ -1,14 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
+import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Selectable } from '../../../core/models/selectable.model';
 
 @Component({
   selector: 'app-selection-form',
-  imports: [],
+  imports: [[ReactiveFormsModule, CommonModule]],
   templateUrl: './selection-form.component.html',
   styleUrl: './selection-form.component.css',
 })
 export class SelectionFormComponent<T extends Selectable> {
   labelName = input<string>('Selecciona un elemento');
+  controlInput = input.required<AbstractControl | null>({ alias: 'control' });
   idElement = input<string>('item-select');
   defaultValue = input<string>('');
   items = input.required<T[]>();
@@ -17,6 +20,8 @@ export class SelectionFormComponent<T extends Selectable> {
     const defaultVal = this.defaultValue();
     return this.items().find(record => String(record.id) === defaultVal);
   });
+
+  controlForm = computed(() => this.controlInput() as FormControl);
 
   onSelect(event: Event): void {
     const selectEl = event.target as HTMLSelectElement;
