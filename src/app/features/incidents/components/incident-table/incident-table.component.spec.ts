@@ -85,8 +85,8 @@ describe('IncidentTableComponent (Lógica de la Clase)', () => {
     it('debe renderizar una fila por cada incidente proveído en el input', () => {
       // 1. Suministramos datos simulados al input
       const mockIncidents = [
-        { id: '1', title: 'Error A', category: 'A', priority: 'LOW', status: 'OPEN', createdAt: '', updatedAt: '', description: '', reportId: '', assignedAggentId: '' },
-        { id: '2', title: 'Error B', category: 'B', priority: 'HIGH', status: 'CLOSED', createdAt: '', updatedAt: '', description: '', reportId: '', assignedAggentId: '' }
+        { id: '1', title: 'Error A', category: 'A', priority: 'LOW', status: 'OPEN', createdAt: '', updatedAt: '', description: '', reportId: '', assignedAgentId: '' },
+        { id: '2', title: 'Error B', category: 'B', priority: 'HIGH', status: 'CLOSED', createdAt: '', updatedAt: '', description: '', reportId: '', assignedAgentId: '' }
       ];
       fixture.componentRef.setInput('paginatedIncidents', mockIncidents);
 
