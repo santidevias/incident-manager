@@ -3,7 +3,6 @@ import { Service, signal } from '@angular/core';
 @Service()
 export class ModalService {
   private isOpenSignal = signal<boolean>(false);
-  // incidentSeleted = signal<>();
   isOpen = this.isOpenSignal.asReadonly();
 
   open() {

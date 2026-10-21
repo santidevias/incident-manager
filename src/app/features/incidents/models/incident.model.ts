@@ -8,14 +8,9 @@ export interface Incident {
   priority: IncidentPriority;
   status: IncidentStatus;
   reportId: string;
-  assignedAggentId: string;
+  assignedAgentId: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface Agent {
-  id: string,
-  name: string,
 }
 
 export interface Category {
