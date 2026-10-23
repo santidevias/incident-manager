@@ -58,7 +58,7 @@ Sigue estos pasos para clonar e inicializar el entorno de desarrollo:
 
 ## 🧪 Ejecución de Pruebas Unitarias
 
-Para ejecutar el conjunto de pruebas unitarias de la aplicación con Karma/Jasmine (o Jest según tu config):
+Para ejecutar el conjunto de pruebas unitarias de la aplicación con angular nativo es Vitest, viene integrado en version 22+:
 
 ```bash
 ng test
@@ -164,6 +164,12 @@ El módulo de incidentes provee un ciclo completo de administración de casos (C
 - **Filtrado Avanzado Segmentado:** Controles dedicados para acotar incidentes por Prioridad (`incident-filter-priority`) y Estado (`incident-filter-status`).
 - **Formulario Polimórfico Integrado (`incident-modal-form`):** Interfaz unificada mediante ventanas modales que resuelve de forma inteligente los flujos de creación (POST) y edición (PUT) reutilizando validaciones estrictas, aunque para la prueba técnica solo se actualiza localmente los valores del servicio, el servicio podría reactualizarse usando paginación desde el servidor y reload en los rxResource.
 
+## 🎯 Características Funcionales del Módulo Dashboard
+
+El módulo dashboard está dispuesto como un componente que por el momento trabaja con métricas e indicadores de incidentes, pero podría escalar.
+
+- **Listado de 5 incidentes más críticos e indicadores de los estados de las incidencias (`stats-incident`):** Presentación de información prioritaria de incidentes y un sondeo de histórico de los incidentes según categoría.
+
 ## 🔓 Matriz de Permisos y Control de Acceso (RBAC)
 
 La aplicación implementa un control de acceso estricto por componentes y acciones en el módulo de incidentes, adaptando la interfaz dinámicamente según el rol extraído del usuario autenticado:
@@ -171,7 +177,7 @@ La aplicación implementa un control de acceso estricto por componentes y accion
 | **Rol (`role`)**  | **Ver Incidentes** | **Crear** | **Editar / Actualizar** | **Eliminar** | **Capacidades en la UI**                                                    |
 | ----------------- | ------------------ | --------- | ----------------------- | ------------ | --------------------------------------------------------------------------- |
 | **`admin`**       | 🌍 Todos            | Sí        | Sí                      | Sí           | Control total del sistema y gestión absoluta de incidentes.                 |
-| **`soporte`**     | 🌍 Todos            | Sí        | ⚠️ Solo Estado           | No           | Puede gestionar el flujo del ticket, pero tiene prohibido borrar registros. |
+| **`soporte`**     | ⚠️ Asignados a él   | Sí        | ⚠️ Solo Estado           | No           | Puede gestionar el flujo del ticket, pero tiene prohibido borrar registros. |
 | **`solicitante`** | 🔒 Propios          | Sí        | No                      | No           | Vista restringida a sus propios incidentes en modo de solo lectura.         |
 
 #### 🛠️ Mecanismo de Seguridad en el Frontend
