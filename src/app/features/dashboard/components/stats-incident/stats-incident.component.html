@@ -1,0 +1,88 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <header class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-gray-900">Incidencias</h1>
+      <button
+        (click)="dashboardService.reloadDashboardData()"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700"
+      >
+        Actualizar Métricas
+      </button>
+    </header>
+
+    @if (dashboardService.isLoading()) {
+      <div class="text-center p-12 text-gray-500 font-medium">Sincronizando analíticas...</div>
+    }
+
+    @if (dashboardService.error(); as errMsg) {
+      <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg text-sm">
+        {{ errMsg }}
+      </div>
+    }
+
+    @if (!dashboardService.isLoading() && !dashboardService.error()) {
+      <!-- Pintar KPI sólo si las métricas listas existen -->
+      @if (dashboardService.metrics(); as metrics) {
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div class="bg-white p-4 rounded-xl shadow-sm border">
+            <p class="text-xs text-gray-500 font-medium">Casos Históricos</p>
+            <p class="text-2xl font-bold text-gray-900">{{ metrics.total }}</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+            <p class="text-xs text-blue-600 font-medium">Abiertos</p>
+            <p class="text-2xl font-bold text-blue-900">{{ metrics.open }}</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-yellow-100">
+            <p class="text-xs text-yellow-600 font-medium">En Gestión</p>
+            <p class="text-2xl font-bold text-yellow-900">{{ metrics.inProgress }}</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-green-100">
+            <p class="text-xs text-green-600 font-medium">Solucionados</p>
+            <p class="text-2xl font-bold text-green-900">{{ metrics.closed }}</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-red-200 bg-red-50/30">
+            <p class="text-xs text-red-600 font-medium">Urgencia Crítica</p>
+            <p class="text-2xl font-bold text-red-700">{{ metrics.criticalCount }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- Lista Cruda de Incidentes Recientes Específica para Dashboard -->
+      <div class="bg-white shadow-sm border rounded-xl overflow-hidden">
+        <div class="px-6 py-4 border-b bg-gray-50/50">
+          <h2 class="text-sm font-bold text-gray-800">Alertas de Acción Inmediata (Últimas 5)</h2>
+        </div>
+        <table class="min-w-full divide-y divide-gray-200 text-left text-sm text-gray-600">
+          <tbody class="divide-y divide-gray-200">
+            @for (incident of dashboardService.recentIncidents(); track incident.id) {
+              <tr class="hover:bg-gray-50/70">
+                <td class="px-6 py-4 font-mono text-xs font-bold text-gray-900">
+                  {{ incident.id }}
+                </td>
+                <td class="px-6 py-4 font-medium text-gray-900">{{ incident.title }}</td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">{{
+                    incident.category
+                  }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span
+                    [ngClass]="getPriorityClass(incident.priority)"
+                    class="px-2 py-0.5 text-xs font-semibold rounded-full border"
+                    >{{ incident.priority | incidentPriority }}</span
+                  >
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td class="text-center py-8 text-gray-400">
+                  Todo marcha bien. No hay incidentes urgentes pendientes.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
