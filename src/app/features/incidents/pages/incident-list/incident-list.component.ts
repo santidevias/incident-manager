@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ToastService } from '../../../../core/services/toast-service';
 import { IncidentFilterPriorityComponent } from '../../components/incident-filter-priority/incident-filter-priority.component';
@@ -45,15 +45,6 @@ export class IncidentListComponent {
 
   role = this.auth_service.role;
   currentUser = this.auth_service.currentUser;
-
-  constructor() {
-    effect(() => {
-      if (!this.incident_service.loading()) {
-        this.toastService.showSuccess('Lista de incidentes cargada con éxito!.')
-      }
-    })
-  }
-
 
   protected changeSort(key: string) {
     this.incident_service.changeSort(key as keyof Incident);

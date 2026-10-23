@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from '../../../../environments/environment';
 import { ApiResponse } from '../../../core/models/api-response.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast-service';
 import { Incident } from '../models/incident.model';
 
 
@@ -21,6 +22,15 @@ export class IncidentService {
       this.http.get<ApiResponse<Incident[]>>(`${this.apiUrl}/incidents`)
   });
   public selectedIncident = signal<Incident | undefined>(undefined);
+  private toastService = inject(ToastService);
+
+  constructor() {
+    effect(() => {
+      if (!this.loading()) {
+        this.toastService.showSuccess('Lista de incidentes cargada con éxito!.')
+      }
+    })
+  }
 
   incidents = computed(() => this.incidentResource.value()?.data ?? []);
 
