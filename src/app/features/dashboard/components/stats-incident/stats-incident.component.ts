@@ -12,6 +12,11 @@ import { DashboardIncendentService } from '../../services/dashboard-incendent-se
 export class StatsIncidentComponent {
   readonly dashboardService = inject(DashboardIncendentService);
 
+  metrics = this.dashboardService.metrics;
+  isLoading = this.dashboardService.isLoading;
+  error = this.dashboardService.error;
+  recentIncidents = this.dashboardService.recentIncidents;
+
   getPriorityClass(priority: string): string {
     const classes = {
       CRITICAL: 'bg-red-100 text-red-800 border-red-200',
@@ -20,6 +25,10 @@ export class StatsIncidentComponent {
       LOW: 'bg-green-100 text-green-800 border-green-200'
     };
     return classes[priority as keyof typeof classes] || 'bg-gray-100 text-gray-800';
+  }
+
+  reloadDashboardData(): void {
+    this.dashboardService.reloadDashboardData();
   }
 
 }

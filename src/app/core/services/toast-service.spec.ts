@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ToastService } from './toast-service';
+const jest = vi;
 
 describe('ToastService', () => {
   let service: ToastService;
@@ -14,7 +15,7 @@ describe('ToastService', () => {
 
   afterEach(() => {
     // Restaurar los temporizadores reales después de cada prueba
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it('debería inicializarse con una lista de toasts vacía', () => {
@@ -53,18 +54,18 @@ describe('ToastService', () => {
 
   it('debería auto-eliminar el toast una vez transcurrida su duración', () => {
     // 1. Activar los temporizadores falsos de Vitest
-    vi.useFakeTimers();
+    jest.useFakeTimers();
 
     // 2. Crear un toast con duración de 2000ms
     service.show('Toast temporal', 'warning', 2000);
     expect(service.toasts().length).toBe(1);
 
     // 3. Avanzar el tiempo simulado justo antes de que expire (1999ms)
-    vi.advanceTimersByTime(1999);
+    jest.advanceTimersByTime(1999);
     expect(service.toasts().length).toBe(1); // Sigue ahí
 
     // 4. Avanzar el tiempo restante para cumplir los 2000ms
-    vi.advanceTimersByTime(1);
+    jest.advanceTimersByTime(1);
     expect(service.toasts().length).toBe(0); // Se ha eliminado automáticamente
   });
 });

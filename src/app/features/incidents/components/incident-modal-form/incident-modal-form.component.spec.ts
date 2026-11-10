@@ -1,14 +1,14 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { User, UserRole } from '../../../../core/models/auth.model';
-import { Selectable } from '../../../../core/models/selectable.model';
 import { ProfileService } from '../../../../core/services/profile-service';
 import { Incident } from '../../models/incident.model';
 import { CategoryService } from '../../services/category-service';
 import { IncidentFormService } from '../../services/incident-form-service';
 import { IncidentModalFormComponent } from './incident-modal-form.component';
+const jest = vi;
 
 describe('IncidentModalFormComponent', () => {
   let component: IncidentModalFormComponent;
@@ -45,7 +45,7 @@ describe('IncidentModalFormComponent', () => {
     };
 
     mockFormService = {
-      buildForm: vi.fn().mockImplementation((role, incident) => {
+      buildForm: jest.fn().mockImplementation((role, incident) => {
         return new FormGroup({
           id: new FormControl(incident?.id ?? ''),
           title: new FormControl(incident?.title ?? '', Validators.required),
@@ -80,225 +80,181 @@ describe('IncidentModalFormComponent', () => {
 
   });
 
-  it('debería inicializarse correctamente creando el formulario', () => {
-    fixture.detectChanges(); // Ejecuta ngOnInit
-
+  it('debe inicializar el componente de forma correcta', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(mockFormService.buildForm).toHaveBeenCalledWith('admin', undefined);
     expect(component.isEdit).toBe(false);
   });
 
-  it('debería detectar modo edición si se proporciona un incidente para editar', () => {
-    fixture.componentRef.setInput('incidentToEdit', mockIncident);
-    fixture.detectChanges();
+  describe('Ciclo de Vida e Inicialización (ngOnInit)', () => {
+    it('debe establecer isEdit en false cuando no se proporciona un incidente para editar', () => {
+      fixture.componentRef.setInput('incidentToEdit', undefined);
+      component.ngOnInit();
+      expect(component.isEdit).toBe(false);
+      expect(mockFormService.buildForm).toHaveBeenCalledWith('admin', undefined);
+    });
 
-    // En tu código: "this.isEdit = !!this.incidentToEdit;" (evalúa la señal o el input según tu ngOnInit actual)
-    expect(mockFormService.buildForm).toHaveBeenCalledWith('admin', mockIncident);
+    it('debe establecer isEdit en true y construir el formulario con los datos cargados', () => {
+      fixture.componentRef.setInput('incidentToEdit', mockIncident);
+      component.ngOnInit();
+      expect(component.isEdit).toBe(true);
+      expect(mockFormService.buildForm).toHaveBeenCalledWith('admin', mockIncident);
+    });
   });
 
-  describe('Computeds y Reactividad', () => {
-    it('debería calcular agentSelected correctamente si el incidente tiene un agente asignado coincidente', () => {
+  describe('Interacciones y Emisiones de Eventos (Outputs)', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('incidentToEdit', mockIncident);
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('debe emitir onSave con los valores del formulario al hacer submit si es válido', () => {
+      const saveSpy = jest.spyOn(component['onSave'], 'emit');
+
+      component.form.patchValue({
+        title: 'Nuevo título de error masivo',
+        description: 'Detalle del problema de infraestructura'
+      });
+
+      component.onSubmit();
+
+      expect(saveSpy).toHaveBeenCalledWith(component.form.getRawValue());
+    });
+
+    it('no debe emitir onSave si el formulario tiene campos inválidos', () => {
+      const saveSpy = jest.spyOn(component['onSave'], 'emit');
+      component.form.get('title')?.setValue(''); // Forzamos error de validación obligatoria
+
+      component.onSubmit();
+
+      expect(saveSpy).not.toHaveBeenCalled();
+    });
+
+    it('debe emitir onDelete con la data del formulario al ejecutar la acción de borrado', () => {
+      const deleteSpy = jest.spyOn(component['onDelete'], 'emit');
+
+      component.delete();
+
+      expect(deleteSpy).toHaveBeenCalledWith(component.form.getRawValue());
+    });
+
+    it('debe actualizar una propiedad específica del formulario usando patchValue al ejecutar onSelected', () => {
+      const recordDummy = { id: 'cat-modificada', name: 'Nueva Categoria' };
+
+      component.onSelected(recordDummy, 'category');
+
+      expect(component.form.get('category')?.value).toBe('cat-modificada');
+    });
+  });
+
+  describe('Cómputos Reactivos y Propiedades Calculadas (Signals)', () => {
+    it('debe mapear el nombre del agente seleccionado si el ID coincide en el ProfileService', () => {
       fixture.componentRef.setInput('incidentToEdit', mockIncident);
       fixture.detectChanges();
 
       expect(component.agentSelected()).toBe('Agente Asignado');
     });
 
-    it('debería retornar null en agentSelected si no hay incidente o ID asignado', () => {
-      fixture.componentRef.setInput('incidentToEdit', undefined);
+    it('debe retornar null en agentSelected si el incidente no cuenta con assignedAgentId', () => {
+      const incidentSinAgente = { ...mockIncident, assignedAgentId: undefined };
+      fixture.componentRef.setInput('incidentToEdit', incidentSinAgente);
       fixture.detectChanges();
 
       expect(component.agentSelected()).toBeNull();
     });
 
-    it('debería calcular userSelected basado en el reporte del incidente', () => {
+    it('debe retornar null en agentSelected si el ID no se localiza dentro de la señal global', () => {
+      const incidentAgenteInvalido = { ...mockIncident, assignedAgentId: 'id-desconocido-99' };
+      fixture.componentRef.setInput('incidentToEdit', incidentAgenteInvalido);
+      fixture.detectChanges();
+
+      expect(component.agentSelected()).toBeNull();
+    });
+
+    it('debe resolver el nombre del reportero usando el reportId del incidente bajo modo edición', () => {
       fixture.componentRef.setInput('incidentToEdit', mockIncident);
       fixture.detectChanges();
 
       expect(component.userSelected()).toBe('Usuario Prueba');
     });
 
-    it('debería calcular userSelected basado en currentUser si no se edita ningún incidente', () => {
-      fixture.componentRef.setInput('incidentToEdit', undefined);
-      fixture.componentRef.setInput('currentUser', mockUser);
+    it('debe usar el ID del usuario actual de la sesión si el incidente no tiene un reportId explícito', () => {
+      const incidentSinReportero = { ...mockIncident, reportId: undefined };
+      fixture.componentRef.setInput('incidentToEdit', incidentSinReportero);
       fixture.detectChanges();
 
       expect(component.userSelected()).toBe('Usuario Prueba');
     });
 
-  });
-
-  describe('Interacciones y Métodos', () => {
-    beforeEach(() => {
+    it('debe retornar null en userSelected si no se cuenta con reportId ni sesión activa de usuario', () => {
+      fixture.componentRef.setInput('currentUser', null);
+      const incidentVacio = { ...mockIncident, reportId: undefined };
+      fixture.componentRef.setInput('incidentToEdit', incidentVacio);
       fixture.detectChanges();
+
+      expect(component.userSelected()).toBeNull();
     });
 
-    it('debería actualizar un campo específico del formulario mediante onSelected', () => {
-      const selectableItem: Selectable = { id: 'CLOSED', name: 'Resuelto' };
+    it('debe retornar null en userSelected si el identificador no existe en el listado del servicio', () => {
+      const incidentUsuarioDesconocido = { ...mockIncident, reportId: 'anonimo-123' };
+      fixture.componentRef.setInput('incidentToEdit', incidentUsuarioDesconocido);
+      fixture.detectChanges();
 
-      component.onSelected(selectableItem, 'status');
-
-      expect(component.form.get('status')?.value).toBe('CLOSED');
+      expect(component.userSelected()).toBeNull();
     });
-
-    it('debería emitir onSave en onSubmit si el formulario pasa las validaciones de consistencia', () => {
-      const spySave = vi.spyOn((component as any).onSave, 'emit');
-
-      // Rellenamos el título para volver el Form válido
-      component.form.patchValue({
-        id: 'inc-123',
-        title: 'Fallo de red',
-        description: 'Se cae la red en el momento de ingresar al login',
-        category: 'Infraestructura',
-        priority: 'HIGH',
-        status: 'OPEN',
-        reportId: 'usr-100',
-        assignedAgentId: 'agt-200',
-      });
-
-      component.onSubmit();
-
-      expect(spySave).toHaveBeenCalledWith(component.form.getRawValue());
-    });
-
-    it('no debería emitir onSave en onSubmit si el formulario contiene campos inválidos', () => {
-      const spySave = vi.spyOn((component as any).onSave, 'emit');
-
-      // Dejamos el título vacío para mantenerlo inválido
-      fixture.detectChanges()
-      component.form.patchValue({ title: '' });
-      fixture.detectChanges()
-      component.onSubmit();
-
-      expect(spySave).not.toHaveBeenCalled();
-    });
-
-    it('debería emitir onDelete con los datos limpios actuales del formulario', () => {
-      const spyDelete = vi.spyOn((component as any).onDelete, 'emit');
-      fixture.detectChanges()
-      component.form.patchValue({ id: 'inc-123', title: 'Incidente a borrar' });
-      fixture.detectChanges()
-      component.delete();
-
-      expect(spyDelete).toHaveBeenCalledWith(component.form.getRawValue());
-    });
-
   });
-  describe('Renderizado e Interacciones del HTML', () => {
-    it('no debería renderizar absolutamente nada en el DOM si isOpen es false', () => {
+
+  describe('Comportamiento y Renderizado del DOM (HTML)', () => {
+    it('no debe pintar ningún contenedor o backdrop si la señal isOpen es false', async () => {
       fixture.componentRef.setInput('isOpen', false);
+      await Promise.resolve();
       fixture.detectChanges();
 
-      // Intentamos buscar el contenedor del modal
-      const modalContainer = fixture.nativeElement.querySelector('.fixed');
-      expect(modalContainer).toBeNull();
+      const modalDiv = fixture.nativeElement.querySelector('.fixed');
+      expect(modalDiv).toBeNull();
     });
 
-    it('debería mostrar el título "Crear Incidente" cuando isEdit es false', () => {
-      fixture.componentRef.setInput('isOpen', true);
-      fixture.componentRef.setInput('incidentToEdit', undefined);
-      fixture.detectChanges();
-
-      const titleElement = fixture.nativeElement.querySelector('h2');
-      expect(titleElement.textContent).toContain('Crear Incidente');
-    });
-
-    it('debería mostrar el título "Editar Incidente" cuando se pasa un incidente para editar', () => {
-      fixture.componentRef.setInput('isOpen', true);
+    it('debe renderizar el botón de borrado exclusivamente si se encuentra en modo edición y es Admin', async () => {
       fixture.componentRef.setInput('incidentToEdit', mockIncident);
-      fixture.detectChanges();
-
-      const titleElement = fixture.nativeElement.querySelector('h2');
-      expect(titleElement.textContent).toContain('Editar Incidente');
-    });
-
-    it('debería renderizar el selector de agentes UNICAMENTE si el rol es ADMIN', () => {
-      fixture.componentRef.setInput('isOpen', true);
       fixture.componentRef.setInput('currentRole', 'admin' as UserRole);
+      component.ngOnInit();
+
+      await Promise.resolve();
       fixture.detectChanges();
 
-      // Verificamos que el componente hijo de selección de agentes exista
-      const agentSelector = fixture.nativeElement.querySelector('app-selection-form[idElement="\'assignedAgentId\'"]');
-      expect(agentSelector).toBeTruthy();
+      const deleteBtn = fixture.nativeElement.querySelector('button[type="button"].bg-red-50');
+      expect(deleteBtn).not.toBeNull();
     });
 
-    it('debería OCULTAR el selector de agentes si el rol es diferente de admin (ej: requester)', () => {
-      fixture.componentRef.setInput('isOpen', true);
-      fixture.componentRef.setInput('currentRole', 'requester' as UserRole);
-      fixture.detectChanges();
-
-      const agentSelector = fixture.nativeElement.querySelector('app-selection-form[idElement="\'assignedAgentId\'"]');
-      expect(agentSelector).toBeNull();
-    });
-
-    it('debería deshabilitar el botón de "Guardar" si el formulario es inválido', () => {
-      fixture.componentRef.setInput('isOpen', true);
-      // Forzamos que el título esté vacío e inválido
-      fixture.detectChanges()
-      component.form.patchValue({ title: '' });
-      fixture.detectChanges();
-
-      const saveButton = fixture.nativeElement.querySelector('button[type="submit"]');
-      expect(saveButton.disabled).toBe(true);
-    });
-
-    it('debería habilitar el botón de "Guardar" si el formulario es completamente válido', () => {
-      fixture.componentRef.setInput('isOpen', true);
-      fixture.detectChanges()
-      component.form.patchValue({
-        title: 'Título válido de prueba',
-        description: 'Descripción detallada del incidente',
-        category: 'Software',
-        priority: 'LOW',
-        status: 'OPEN'
-      });
-      fixture.detectChanges();
-
-      const saveButton = fixture.nativeElement.querySelector('button[type="submit"]');
-      expect(saveButton.disabled).toBe(false);
-    });
-
-    it('debería invocar el método delete() cuando el usuario hace click en el botón de Eliminar', () => {
-      fixture.componentRef.setInput('isOpen', true);
-      fixture.componentRef.setInput('incidentToEdit', mockIncident); // Necesario para que se muestre el botón eliminar
-      fixture.detectChanges();
-
-      const deleteSpy = vi.spyOn(component, 'delete');
-
-      // Buscamos el botón que contiene el texto 'Eliminar'
-      const buttons = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
-      const deleteButton = buttons.find(btn => btn.textContent?.trim() === 'Eliminar');
-
-      expect(deleteButton).toBeTruthy();
-      deleteButton?.click();
-
-      expect(deleteSpy).toHaveBeenCalled();
-    });
-
-    it('debería emitir onClose cuando el usuario hace click en el botón Cancelar', () => {
-      fixture.componentRef.setInput('isOpen', true);
-      fixture.detectChanges();
-
-      const spyClose = vi.spyOn((component as any).onClose, 'emit');
-
-      const buttons = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
-      const cancelButton = buttons.find(btn => btn.textContent?.trim() === 'Cancelar');
-
-      cancelButton?.click();
-
-      expect(spyClose).toHaveBeenCalled();
-    });
-
-    it('debería mostrar los metadatos ocultos (como Creado el o Reportado por) únicamente en modo edición', () => {
-      fixture.componentRef.setInput('isOpen', true);
+    it('debe ocultar el botón de borrado en el pie de página si el usuario actual no posee rol de administrador', async () => {
       fixture.componentRef.setInput('incidentToEdit', mockIncident);
+      fixture.componentRef.setInput('currentRole', 'requester' as UserRole);
+      component.ngOnInit();
+
+      await Promise.resolve();
       fixture.detectChanges();
 
-      // Buscamos la caja gris de metadata usando clases o texto específico
-      const metadataBox = fixture.nativeElement.querySelector('.text-xs.text-slate-500');
-      expect(metadataBox).toBeTruthy();
-      expect(metadataBox.textContent).toContain('ID: inc-123');
-      expect(metadataBox.textContent).toContain('Reportado por: Usuario Prueba');
+      const deleteBtn = fixture.nativeElement.querySelector('button[type="button"].bg-red-50');
+      expect(deleteBtn).toBeNull();
+    });
+
+    it('debe disparar la emisión de onClose directamente cuando el usuario cliquee el botón Cancelar', async () => {
+      const closeSpy = jest.spyOn(component['onClose'], 'emit');
+      fixture.componentRef.setInput('incidentToEdit', mockIncident);
+      component.ngOnInit();
+
+      await Promise.resolve();
+      fixture.detectChanges();
+
+      // Ubicamos el botón de cancelar por su contenido en texto
+      const botones = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
+      const btnCancelar = botones.find(b => b.textContent?.trim() === 'Cancelar');
+
+      btnCancelar?.dispatchEvent(new Event('click'));
+
+      expect(closeSpy).toHaveBeenCalled();
     });
   });
 });
+

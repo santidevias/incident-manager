@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { IncidentSearchComponent } from './incident-search.component';
+const jest = vi;
 
 describe('IncidentSearchComponent', () => {
   let component: IncidentSearchComponent;
@@ -27,7 +28,7 @@ describe('IncidentSearchComponent', () => {
   describe('Lógica de la Clase (TypeScript)', () => {
     it('debe emitir el valor del texto cuando se ejecuta updateSearch()', () => {
       // 1. Creamos el espía para el output de Vitest
-      const searchSpy = vi.spyOn(component.onUpdateSearch, 'emit');
+      const searchSpy = jest.spyOn(component.onUpdateSearch, 'emit');
 
       // 2. Simulamos la estructura exacta que espera (event.target.value)
       const mockText = 'Fallo de red';
@@ -50,7 +51,7 @@ describe('IncidentSearchComponent', () => {
   // ==========================================
   describe('Integración con el DOM (HTML)', () => {
     it('debe emitir el término de búsqueda cuando el usuario escribe en el input', () => {
-      const searchSpy = vi.spyOn(component.onUpdateSearch, 'emit');
+      const searchSpy = jest.spyOn(component.onUpdateSearch, 'emit');
 
       // Sincronizamos el renderizado inicial del HTML
       fixture.detectChanges();

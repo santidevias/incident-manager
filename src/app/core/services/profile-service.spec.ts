@@ -23,6 +23,11 @@ describe('ProfileService (Zoneless)', () => {
     ]
   };
 
+  const responseUnknownData = {
+    success: true,
+    message: '',
+  }
+
   const mockUsersResponse: ApiResponse<User[]> = {
     success: true,
     message: '',
@@ -58,6 +63,15 @@ describe('ProfileService (Zoneless)', () => {
     const reqUsers = httpMock.expectOne(`${baseUrl}/users`);
     reqUsers.flush(mockUsersResponse);
   };
+
+  const unknownDataResource = () => {
+    TestBed.tick();
+    const reqAgents = httpMock.expectOne(`${baseUrl}/agents`);
+    reqAgents.flush(responseUnknownData);
+
+    const reqUsers = httpMock.expectOne(`${baseUrl}/users`);
+    reqUsers.flush(responseUnknownData);
+  }
 
   describe('Inicialización de rxResource', () => {
     it('debe cargar los agentes y usuarios asignados en los signals computed', async () => {
@@ -107,6 +121,20 @@ describe('ProfileService (Zoneless)', () => {
       const fallbackIdSignal = service.getUser('unknown-user-id');
 
       expect(fallbackIdSignal()).toBe('unknown-user-id');
+    });
+  });
+
+  describe('Sin datos inicialización de rxResource', () => {
+    beforeEach(async () => {
+      unknownDataResource();
+      await TestBed.inject(ApplicationRef).whenStable();
+    });
+
+    it('debe ser una lista vacía ', async () => {
+      await TestBed.inject(ApplicationRef).whenStable();
+
+      expect(service.assignedAgents()).toEqual([]);
+      expect(service.users()).toEqual([]);
     });
   });
 });

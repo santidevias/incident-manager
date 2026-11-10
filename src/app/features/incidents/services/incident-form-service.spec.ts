@@ -58,6 +58,15 @@ describe('IncidentFormService (Zoneless)', () => {
       expect(titleControl?.valid).toBeFalsy();
     });
 
+    it('debe validar con éxito el título si cuenta con al menos 5 caracteres obligatorios', () => {
+      const form = service.buildForm('admin');
+      const titleControl = form.get('title');
+
+      // Cobertura del flujo positivo de la regla de longitud mínima
+      titleControl?.setValue('Fallo masivo en base de datos');
+      expect(titleControl?.valid).toBeTruthy();
+    });
+
     it('debe usar un string vacío para reportId si no hay ningún usuario logueado', () => {
       mockCurrentUserSignal.set(null); // Simulamos sesión cerrada
       const form = service.buildForm('admin');

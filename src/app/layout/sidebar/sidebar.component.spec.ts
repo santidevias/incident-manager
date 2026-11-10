@@ -4,12 +4,13 @@ import { provideRouter } from '@angular/router';
 import { User } from '../../core/models/auth.model';
 import { AuthService } from '../../core/services/auth.service';
 import { SidebarComponent } from './sidebar.component';
+const jest = vi;
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
   const mockAuthService = {
-    logout: vi.fn(),
+    logout: jest.fn(),
     role: signal('admin'),
     roleInitial: signal('a'),
     currentUser: signal<User>({
@@ -45,7 +46,7 @@ describe('SidebarComponent', () => {
   });
 
   it('debe emitir el evento toggleMenu cuando se llama a toggleMobileMenu()', () => {
-    const emitSpy = vi.spyOn(component.toggleMenu, 'emit');
+    const emitSpy = jest.spyOn(component.toggleMenu, 'emit');
 
     component.toggleMobileMenu();
 
@@ -53,7 +54,7 @@ describe('SidebarComponent', () => {
   });
 
   it('debe emitir el evento closeMenu cuando se llama a closeMobileMenu()', () => {
-    const emitSpy = vi.spyOn(component.closeMenu, 'emit');
+    const emitSpy = jest.spyOn(component.closeMenu, 'emit');
 
     component.closeMobileMenu();
 

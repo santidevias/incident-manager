@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest'; // 👈 Importaciones explícitas de Vitest
+import { beforeEach, describe, expect, it } from 'vitest'; // 👈 Importaciones explícitas de Vitest
 import { IncidentFilterPriorityComponent } from './incident-filter-priority.component';
+const jest = vi;
 
 describe('IncidentFilterPriorityComponent', () => {
   let component: IncidentFilterPriorityComponent;
@@ -22,7 +23,7 @@ describe('IncidentFilterPriorityComponent', () => {
   });
 
   it('debe emitir el nuevo valor de prioridad cuando cambie la selección', () => {
-    const emitSpy = vi.spyOn(component.onUpdatePriority, 'emit');
+    const emitSpy = jest.spyOn(component.onUpdatePriority, 'emit');
 
     const mockValue = 'HIGH';
     const mockEvent = {

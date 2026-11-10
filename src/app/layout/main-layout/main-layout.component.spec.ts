@@ -4,13 +4,14 @@ import { provideRouter } from '@angular/router';
 import { User } from '../../core/models/auth.model';
 import { AuthService } from '../../core/services/auth.service';
 import { MainLayoutComponent } from './main-layout.component';
+const jest = vi;
 
 describe('MainLayoutComponent', () => {
   let component: MainLayoutComponent;
   let fixture: ComponentFixture<MainLayoutComponent>;
 
   const mockAuthService = {
-    logout: vi.fn(),
+    logout: jest.fn(),
     role: signal('admin'),
     roleInitial: signal('a'),
     currentUser: signal<User>({
@@ -23,7 +24,7 @@ describe('MainLayoutComponent', () => {
   };
 
   beforeEach(async () => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     await TestBed.configureTestingModule({
       imports: [MainLayoutComponent],

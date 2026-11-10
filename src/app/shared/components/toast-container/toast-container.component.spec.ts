@@ -1,10 +1,11 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Toast } from '../../../core/models/toast.model'; // Asegúrate de ajustar la ruta
 import { ToastService } from '../../../core/services/toast-service';
 import { ToastContainerComponent } from './toast-container.component';
+const jest = vi;
 
 describe('ToastContainerComponent', () => {
   let component: ToastContainerComponent;
@@ -15,7 +16,7 @@ describe('ToastContainerComponent', () => {
     // 1. Crear un mock usando señales reales para que el @for reaccione automáticamente
     mockToastService = {
       toasts: signal<Toast[]>([]),
-      remove: vi.fn(), // Espía (spy) de Vitest para verificar llamadas
+      remove: jest.fn(), // Espía (spy) de Vitest para verificar llamadas
     };
 
     await TestBed.configureTestingModule({

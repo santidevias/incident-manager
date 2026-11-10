@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { IncidentFilterStatusComponent } from './incident-filter-status.component';
+const jest = vi;
 
 describe('IncidentFilterStatusComponent (Estándar Senior)', () => {
   let component: IncidentFilterStatusComponent;
@@ -22,7 +23,7 @@ describe('IncidentFilterStatusComponent (Estándar Senior)', () => {
 
   describe('Lógica Interna (TypeScript)', () => {
     it('debe emitir el estado correcto al ejecutar updateStatus() de forma manual', () => {
-      const updateStatusSpy = vi.spyOn(component.onUpdateStatus, 'emit');
+      const updateStatusSpy = jest.spyOn(component.onUpdateStatus, 'emit');
       const mockValue = 'IN_PROGRESS';
       const mockEvent = {
         target: { value: mockValue }
@@ -36,7 +37,7 @@ describe('IncidentFilterStatusComponent (Estándar Senior)', () => {
 
   describe('Interacción con la UI (DOM)', () => {
     it('debe capturar la selección del usuario en el HTML y emitir el output esperado', () => {
-      const updateStatusSpy = vi.spyOn(component.onUpdateStatus, 'emit');
+      const updateStatusSpy = jest.spyOn(component.onUpdateStatus, 'emit');
 
       fixture.detectChanges();
       const selectEl = fixture.nativeElement.querySelector('[data-testid="status-filter-select"]') as HTMLSelectElement;

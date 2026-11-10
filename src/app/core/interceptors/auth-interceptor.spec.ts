@@ -5,22 +5,23 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service'; // Ajusta la ruta a tu servicio
 import { authInterceptor } from './auth-interceptor';
+const jest = vi;
 
 describe('authInterceptor', () => {
   // 1. Mocks de los servicios que inyecta el interceptor
   const mockRouter = {
-    navigate: vi.fn()
+    navigate: jest.fn()
   };
 
   const mockAuthService = {
-    logout: vi.fn()
+    logout: jest.fn()
   };
 
   // 2. Mock del siguiente manejador (next) que simula el flujo de la petición
-  const mockNext = vi.fn((req: HttpRequest<any>) => of({} as HttpEvent<any>));
+  const mockNext = jest.fn((req: HttpRequest<any>) => of({} as HttpEvent<any>));
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     localStorage.clear(); // Limpiamos el almacenamiento local antes de cada prueba
   });
 
@@ -42,7 +43,7 @@ describe('authInterceptor', () => {
     setupInterceptorContext('server');
 
     // El espía de localStorage no debería ser llamado, pero ponemos un token por si acaso
-    const spyGetItem = vi.spyOn(Storage.prototype, 'getItem');
+    const spyGetItem = jest.spyOn(Storage.prototype, 'getItem');
 
     const reqBase = new HttpRequest('GET', '/api/incidents');
 
@@ -128,4 +129,24 @@ describe('authInterceptor', () => {
     expect(mockAuthService.logout).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
   });
+
+  it('En modo servidor no debería sino retornar el error.', () => {
+    setupInterceptorContext('server');
+
+    // Forzamos al mockNext a retornar una respuesta fallida con estatus 401
+    const error401 = new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' });
+    mockNext.mockReturnValue(throwError(() => error401));
+
+    const reqBase = new HttpRequest('GET', '/api/incidents');
+
+    // Debemos suscribirnos al flujo retornado para que RxJS ejecute la tubería del catchError
+    TestBed.runInInjectionContext(() =>
+      authInterceptor(reqBase, mockNext)
+    ).subscribe({
+      error: (err) => {
+        expect(err.status).toBe(401);
+      }
+    });
+  });
+
 });

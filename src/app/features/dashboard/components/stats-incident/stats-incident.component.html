@@ -3,26 +3,26 @@
     <header class="flex justify-between items-center">
       <h1 class="text-2xl font-bold text-gray-900">Incidencias</h1>
       <button
-        (click)="dashboardService.reloadDashboardData()"
+        (click)="reloadDashboardData()"
         class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700"
       >
         Actualizar Métricas
       </button>
     </header>
 
-    @if (dashboardService.isLoading()) {
+    @if (isLoading()) {
       <div class="text-center p-12 text-gray-500 font-medium">Sincronizando analíticas...</div>
     }
 
-    @if (dashboardService.error(); as errMsg) {
+    @if (error(); as errMsg) {
       <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg text-sm">
         {{ errMsg }}
       </div>
     }
 
-    @if (!dashboardService.isLoading() && !dashboardService.error()) {
+    @if (!isLoading() && !error()) {
       <!-- Pintar KPI sólo si las métricas listas existen -->
-      @if (dashboardService.metrics(); as metrics) {
+      @if (metrics(); as metrics) {
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div class="bg-white p-4 rounded-xl shadow-sm border">
             <p class="text-xs text-gray-500 font-medium">Casos Históricos</p>
@@ -54,7 +54,7 @@
         </div>
         <table class="min-w-full divide-y divide-gray-200 text-left text-sm text-gray-600">
           <tbody class="divide-y divide-gray-200">
-            @for (incident of dashboardService.recentIncidents(); track incident.id) {
+            @for (incident of recentIncidents(); track incident.id) {
               <tr class="hover:bg-gray-50/70">
                 <td class="px-6 py-4 font-mono text-xs font-bold text-gray-900">
                   {{ incident.id }}

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
+const jest = vi;
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -20,7 +21,7 @@ describe('HeaderComponent', () => {
   });
 
   it('debe emitir el evento toggleMenu cuando se llama a toggleMobileMenu()', () => {
-    const emitSpy = vi.spyOn(component.toggleMenu, 'emit');
+    const emitSpy = jest.spyOn(component.toggleMenu, 'emit');
 
     component.toggleMobileMenu();
     expect(emitSpy).toHaveBeenCalled();

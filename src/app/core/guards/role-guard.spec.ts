@@ -4,19 +4,21 @@ import { Router, UrlTree } from '@angular/router';
 import { AuthService } from '../services/auth.service'; // Ajusta la ruta a tu servicio
 import { hasRoleGuard } from './role-guard'; // Ajusta la ruta a tu archivo
 
+const jest = vi;
+
 describe('hasRoleGuard', () => {
-  // 1. Definimos los objetos mock con funciones espía de Vitest (vi.fn)
+  // 1. Definimos los objetos mock con funciones espía de Vitest (jest.fn)
   const mockRouter = {
-    createUrlTree: vi.fn((commands: any) => ({ tree: commands }) as unknown as UrlTree)
+    createUrlTree: jest.fn((commands: any) => ({ tree: commands }) as unknown as UrlTree)
   };
 
   const mockAuthService = {
-    currentUser: vi.fn()
+    currentUser: jest.fn()
   };
 
   // Limpiamos los mocks antes de cada prueba para que no se contaminen entre sí
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   // Función de ayuda para cambiar el entorno (Browser vs Server) dinámicamente

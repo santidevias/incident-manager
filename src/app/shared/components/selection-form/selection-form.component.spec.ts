@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Selectable } from '../../../core/models/selectable.model';
 import { SelectionFormComponent } from './selection-form.component';
-
+const jest = vi;
 interface MockItem extends Selectable {
   id: string;
   name: string;
@@ -64,7 +64,7 @@ describe('SelectionFormComponent', () => {
   });
 
   it('debería emitir el objeto seleccionado en el evento selectionChange cuando onSelect es invocado', () => {
-    const spyOutput = vi.spyOn(component.selectionChange, 'emit');
+    const spyOutput = jest.spyOn(component.selectionChange, 'emit');
 
     const mockEvent = {
       target: {
@@ -79,7 +79,7 @@ describe('SelectionFormComponent', () => {
   });
 
   it('no debería emitir nada en selectionChange si el valor seleccionado no se encuentra en la lista de items', () => {
-    const spyOutput = vi.spyOn(component.selectionChange, 'emit');
+    const spyOutput = jest.spyOn(component.selectionChange, 'emit');
 
     const mockEvent = {
       target: {
